@@ -22,10 +22,10 @@ button:focus-visible{outline:2px solid #88c6ff;outline-offset:3px}.lobby-control
 <div class="app">
 <header class="header"><div class="identity"><div class="mark" aria-hidden="true">Y</div><div><div class="eyebrow">PROVO, UTAH · GAME DAY 2026</div><h1>COUGAR CROSSING</h1></div></div><div class="connection"><i class="dot" id="dot"></i><span id="connection">Connecting…</span></div></header>
 <section class="rooms-bar" aria-label="Game rooms"><div class="room-identity"><small>YOUR GAME</small><strong id="room-label">Public game</strong></div><div class="room-actions"><button class="room-button" id="solo-room">Play solo</button><button class="room-button" id="create-room">Create team</button><form id="join-room"><label class="sr-only" for="room-code">Room code</label><input id="room-code" maxlength="6" placeholder="ROOM CODE" autocomplete="off" autocapitalize="characters" spellcheck="false" required pattern="[A-Za-z2-9]{6}"><button class="room-button" type="submit">Join</button></form><button class="room-button" id="copy-room" hidden>Invite teammates</button><button class="room-button subtle" id="public-room" hidden>Public game</button></div><div id="room-feedback" class="room-feedback" role="status">Play with everyone, go solo, or create a private room for your team.</div></section>
-<section class="scoreboard" aria-label="Game scoreboard"><div class="stats"><div class="stat"><small>ALIVE</small><strong id="alive">0 <span>/ 40</span></strong></div><div class="stat"><small>YARDS</small><strong id="score">0</strong></div><div class="stat"><small>BEST</small><strong id="best">0</strong></div><div class="stat"><small>STATUS</small><strong class="status" id="lives">IN PLAY</strong></div></div><div class="toolbar"><div class="mode-picker"><label for="game-mode">GAME MODE</label><select id="game-mode" aria-describedby="mode-status" disabled><option value="course">1,200 yd course</option><option value="endless">Endless ∞</option></select></div><div class="mode-picker"><label for="mode">DIFFICULTY</label><select id="mode" aria-describedby="mode-status" disabled><option value="easy">Easy</option><option value="normal">Normal</option><option value="hard">Hard</option></select></div><input id="name" maxlength="16" placeholder="Your name" aria-label="Player name"><button class="action secondary" id="restart">New kickoff</button><button class="action secondary lobby-control" id="lobby">Team lobby</button><button class="action" id="fill">Fill with 39 Bots</button></div></section>
+<section class="scoreboard" aria-label="Game scoreboard"><div class="stats"><div class="stat"><small>IN PLAY</small><strong id="alive">0 <span>/ 40</span></strong></div><div class="stat"><small>YARDS</small><strong id="score">0</strong></div><div class="stat"><small>BEST</small><strong id="best">0</strong></div><div class="stat"><small>STATUS</small><strong class="status" id="lives">IN PLAY</strong></div></div><div class="toolbar"><div class="mode-picker"><label for="game-mode">GAME MODE</label><select id="game-mode" aria-describedby="mode-status" disabled><option value="course">1,200 yd course</option><option value="endless">Endless ∞</option></select></div><div class="mode-picker"><label for="mode">DIFFICULTY</label><select id="mode" aria-describedby="mode-status" disabled><option value="easy">Easy</option><option value="normal">Normal</option><option value="hard">Hard</option></select></div><input id="name" maxlength="16" placeholder="Your name" aria-label="Player name"><button class="action secondary" id="restart">New kickoff</button><button class="action secondary lobby-control" id="lobby">Team lobby</button><button class="action" id="fill">Fill with 39 Bots</button></div></section>
 <section class="matchup" aria-label="Opponent difficulty"><div class="matchup-team"><span class="opponent-icon" id="opponent-icon">UT</span><div><small id="stage-number">STAGE 1 / 12 · WARMUP</small><strong id="opponent-name">Utah Tech</strong></div></div><div class="matchup-progress"><span id="next-stage">Next: Colorado State · 100 yd</span><div class="progress-track"><i id="stage-progress"></i></div></div></section>
 <div class="mode-status" id="mode-status" role="status">Easy · captain selects difficulty</div>
-<main class="stage" id="stage"><canvas id="game" tabindex="0" aria-label="Football crossing game. Move forward or sideways with arrows or W A D."></canvas><div class="field-label"><span class="pill easy" id="difficulty-label">WARMUP</span><span class="pill">GRIDIRON · 12 COLUMNS</span></div><div class="overlay" id="overlay"><div class="message"><h2 id="title">Taking the field…</h2><p id="detail">Getting ready for kickoff.</p><div class="how-to" id="how-to" hidden><b>Move:</b> hold ↑ ← → or W A D, or use the buttons.<br><b>Cross:</b> dodge defenders and ride rafts across water.<br><b>Keep going:</b> stay ahead of the pressure line. One life.</div><div class="results-board" id="results-board" hidden><h3>FINAL DISTANCE LEADERBOARD</h3><ol id="results-list"></ol><div class="your-rank" id="your-rank"></div></div><button class="action" id="retry" hidden>Kick off again</button></div></div><div class="toast" id="toast" hidden></div><div class="game-broadcast" id="game-broadcast">BYU RETURN<small id="broadcast-detail">LAVELL EDWARDS STADIUM</small></div><div class="celebration" id="celebration" role="status" hidden><strong>TOUCHDOWN!</strong><span id="celebration-detail"></span></div><div class="you-note" id="note">White BYU jersey = YOU · One hop per cell</div></main>
+<main class="stage" id="stage"><canvas id="game" tabindex="0" aria-label="Football crossing game. Move forward or sideways with arrows or W A D."></canvas><div class="field-label"><span class="pill easy" id="difficulty-label">WARMUP</span><span class="pill">GRIDIRON · 12 COLUMNS</span></div><div class="overlay" id="overlay"><div class="message"><h2 id="title">Taking the field…</h2><p id="detail">Getting ready for kickoff.</p><div class="how-to" id="how-to" hidden><b>Move:</b> hold ↑ ← → or W A D, or use the buttons.<br><b>Cross:</b> dodge defenders and ride rafts across water.<br><b>Keep going:</b> stay ahead of the pressure line. One life.</div><div class="results-board" id="results-board" hidden><h3>FINAL STANDINGS</h3><ol id="results-list"></ol><div class="your-rank" id="your-rank"></div></div><button class="action" id="retry" hidden>Kick off again</button></div></div><div class="toast" id="toast" hidden></div><div class="game-broadcast" id="game-broadcast">BYU RETURN<small id="broadcast-detail">LAVELL EDWARDS STADIUM</small></div><div class="celebration" id="celebration" role="status" hidden><strong>TOUCHDOWN!</strong><span id="celebration-detail"></span></div><div class="you-note" id="note">White BYU jersey = YOU · One hop per cell</div></main>
 <footer class="footer"><button class="room-button settings-toggle" id="settings-toggle" aria-expanded="false">Settings</button><div class="instructions"><b>Hold ↑ ← → or W A D.</b> <span id="obstacle-tip">Keep advancing! The pressure line follows you. Pause briefly to time crossings.</span><div class="legend" id="legend" aria-label="BYU 2026 opponents"></div><div class="footnote">Opponents from the <a href="https://byucougars.com/sports/football/schedule/season/2026" target="_blank" rel="noopener">2026 BYU schedule</a>. Fan-made game.</div></div><button class="room-button sound-control" id="sound" aria-label="Mute game audio" aria-pressed="false">Sound on</button><div class="dpad" aria-label="Movement controls"><button data-dx="-1" data-dy="0" aria-label="Move left">←</button><button data-dx="0" data-dy="1" aria-label="Move forward">↑</button><button data-dx="1" data-dy="0" aria-label="Move right">→</button></div></footer>
 </div>
 <script id="shared-physics">
@@ -263,6 +263,8 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
       if (next <= p.simAt) next = Math.min(now, p.simAt + 0.001);
       advance(p, next, seed, startedAt);
       hit = hazard(); if (hit) return hit;
+      // Stop at the exact landing time so course finish order is authoritative.
+      if (!endless && p.score >= FINISH_ROW) break;
     }
     return null;
   }
@@ -287,7 +289,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = Game;
 
 // Compact wire format: static roster/settings travel separately from 20 Hz movement.
 // Remote positions use float32; authoritative local prediction keeps float64 precision.
-const SNAPSHOT_REASONS = ['', 'tackle', 'water', 'sideline', 'scroll wall', 'blitz', 'blocking sled', 'Joining next kickoff', 'eliminated'];
+const SNAPSHOT_REASONS = ['', 'tackle', 'water', 'sideline', 'scroll wall', 'blitz', 'blocking sled', 'Joining next kickoff', 'eliminated', 'finished'];
 function encodeSnapshot(packet, revision) {
   const p=packet.self, count=packet.players.length;
   const bytes=new Uint8Array(26+count*9+49+(p.hop?40:0)+(p.queued?14:0)),view=new DataView(bytes.buffer);let at=0;
@@ -473,7 +475,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     const active=`${Game.MODES[round.difficulty||'easy'].label} · ${gameLabel(round.gameMode)}`, next=`${Game.MODES[state.selectedDifficulty||round.difficulty||'easy'].label} · ${gameLabel(state.selectedGameMode||round.gameMode)}`;
     text('mode-status',active===next?`${active} · ${isCaptain?'Your settings':'Captain chooses settings'}`:`${active} now · ${next} next kickoff`);
     snapshots.push({t:state.t,players:state.players,byId:new Map(state.players.map(p=>[p[0],p]))});while(snapshots.length>30)snapshots.shift();
-    if(rawSelf?.alive&&!state.self.alive&&!changed){stadiumAudio.impact(state.self.reason==='water');showToast(`Eliminated: ${state.self.reason||'tackle'}. Watching the field.`);}
+    if(rawSelf?.alive&&!state.self.alive&&!changed){if(state.self.reason==='finished'){stadiumAudio.touchdown();showToast('Course complete! You’re safe. Watching the remaining runners.');}else{stadiumAudio.impact(state.self.reason==='water');showToast(`Eliminated: ${state.self.reason||'tackle'}. Watching the field.`);}}
     if(!changed&&rawSelf?.alive&&state.self.alive&&Math.floor(state.self.score/20)>Math.floor(rawSelf.score/20))celebrate(Math.floor(state.self.score/20)*100);
     updateResults(state);
     rawSelf=state.self;pending=pending.filter(c=>c.seq>rawSelf.ack);
@@ -486,7 +488,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     needsRebase=false;
     const aliveText=`${state.alive} `;if($('alive').firstChild.nodeValue!==aliveText)$('alive').firstChild.nodeValue=aliveText;
     const yards=Math.max(0,rawSelf.score)*Game.YARDS_PER_ROW;text('score',yards);
-    if(yards>best){best=yards;save.set('cougarBest',best);}text('best',best);text('lives',rawSelf.alive?'IN PLAY':'OUT');
+    if(yards>best){best=yards;save.set('cougarBest',best);}text('best',best);text('lives',rawSelf.reason==='finished'?'FINISHED':rawSelf.alive?'IN PLAY':'OUT');
     $('restart').disabled=!isCaptain||matchHumans>1&&!['over','lobby'].includes(round.phase);
     text('restart',round.phase==='lobby'?'Start game':round.phase==='over'?'Back to lobby':'New game');
     $('lobby').disabled=!isCaptain||matchHumans>1&&round.phase==='running';text('lobby',teamMode?'Skip lobby':'Team lobby');
@@ -734,17 +736,18 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     if(!reducedMotion?.matches)for(let i=0;i<48;i++){const seed=Game.hash32(`${round.id}:${yards}:${i}`);confetti.push({x:(seed%1000)/1000,vx:((seed>>>10)%100-50)/180,vy:.2+((seed>>>18)%100)/180,spin:i*.8,color:i%3===0?'#fff':i%3===1?'#80bdff':'#f8d581'});}
   }
   // Step 6: result rankings come from authoritative final scores, never rendered positions.
+  const finishTime=ms=>`${Math.floor(ms/60000)}:${((ms%60000)/1000).toFixed(2).padStart(5,'0')}`;
   function updateResults(state){
     const board=$('results-board');board.hidden=state.round.phase!=='over';
     if(board.hidden)return;
     const rows=state.round.standings||[],key=JSON.stringify([state.round.id,rows]);if(key===lastResultsKey)return;lastResultsKey=key;
     const list=$('results-list');list.replaceChildren();
-    for(const [index,row] of rows.slice(0,5).entries()){
+    for(const [index,row] of rows.entries()){
       const li=document.createElement('li');li.value=index+1;li.className=row[0]===myId?'you':'';
       li.appendChild(document.createTextNode(`#${jersey(row[0])} ${row[1]}${row[0]===myId?' (YOU)':''}`));
-      const distance=document.createElement('span');distance.textContent=`${Math.max(0,row[2])*Game.YARDS_PER_ROW} yd`;li.appendChild(distance);list.appendChild(li);
+      const distance=document.createElement('span');distance.textContent=row[4]!=null?`FINISHED · ${finishTime(row[4])}`:`${Math.max(0,row[2])*Game.YARDS_PER_ROW} yd`;li.appendChild(distance);list.appendChild(li);
     }
-    const own=rows.findIndex(row=>row[0]===myId);text('your-rank',own<0?'Joined after kickoff':`Your finish: #${own+1} of ${rows.length} · ${Math.max(0,rows[own][2])*Game.YARDS_PER_ROW} yards`);
+    const own=rows.findIndex(row=>row[0]===myId);text('your-rank',own<0?'Joined after kickoff':`Your finish: #${own+1} of ${rows.length} · ${rows[own][4]!=null?`finished in ${finishTime(rows[own][4])}`:`${Math.max(0,rows[own][2])*Game.YARDS_PER_ROW} yards`}`);
   }
   function presentation(at){
     const active=round?.phase==='running'&&model?.alive, gap=model?model.y-round.minY:10;
@@ -859,9 +862,13 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
       else if(at<k.catchAt){title='THE KICK IS AWAY!';detail='Here comes the football…';}
       else{title='BYU MAKES THE CATCH!';detail='GO COUGS! Your return starts now.';}
     }else if(round?.phase==='over'){
-      title=round.winnerId===myId&&model?.alive?'GO COUGS!':rules.endless||matchHumans===1?'RETURN ENDED':'FINAL WHISTLE';
+      title=model?.reason==='finished'?'GO COUGS!':rules.endless||matchHumans===1?'RETURN ENDED':'FINAL WHISTLE';
       retry=isCaptain;retryLabel='Back to lobby';
       detail=`${round.winner||'The Cougars'} ${round.finishReason==='endless'?`finished with ${(round.winnerYards||0).toLocaleString()} yards in Endless mode.`:round.finishReason==='course'?'completed all 12 opponents!':'led the field.'} ${isCaptain?`Press ${retryLabel} when you’re ready.`:'Waiting for the captain to start the next round.'}`;
+    }else if(model?.reason==='finished'){
+      title='COURSE COMPLETE!';
+      const finishers=round.finishers||[],place=finishers.findIndex(row=>row[0]===myId),own=finishers[place];
+      detail=`You’re safe! ${place>=0?`Finish #${place+1} · ${finishTime(own[1])}. `:''}Watching the remaining runners. Final standings appear when everyone finishes or is knocked out.`;
     }else if(model&&!model.alive){
       title='ON THE SIDELINE';
       detail=model.reason==='Joining next kickoff'?'You’ll join at the next kickoff.':`Out: ${model.reason||'tackle'}. Watching the leader.${matchHumans===1?' Start a new kickoff to try again.':''}`;
