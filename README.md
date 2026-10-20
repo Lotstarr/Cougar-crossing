@@ -136,3 +136,7 @@ Cougar Crossing is an unofficial fan-made game. It is not affiliated with or end
 ### Joining and player names
 
 The name field is visible in the lobby on desktop and mobile. Names update automatically, are limited to 16 characters, and follow the player through room changes and reconnects. Blank names use Cougar Fan. No account is needed. Room-code joining accepts lowercase codes, spaced codes, or a full invite link. Joining progress and errors appear beside the room controls; a failed join keeps an existing game intact. Players arriving after kickoff wait for the next round.
+
+### Settings and reconnect behavior
+
+Opening Settings clears movement input and disables the on-screen arrows; live multiplayer play and pressure continue. A reconnect action reconnects the existing session instead of starting another round. Each tab remembers its own player name, while the last chosen name remains the default for new tabs. Renaming on the results screen updates both the standings and the winner announcement.

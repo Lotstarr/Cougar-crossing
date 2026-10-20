@@ -73,6 +73,11 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
     function fill() {
       while (players.size < MAX) add(`bot-${crypto.randomUUID().slice(0, 8)}`, `Cougar ${players.size + 1}`, true);
     }
+    function rename(p,value) {
+      p.name=cleanName(value);
+      const result=round.standings?.find(row=>row[0]===p.id);if(result)result[1]=p.name;
+      if(round.winnerId===p.id)round.winner=p.name;
+    }
     function eliminate(p, reason, at) {
       p.alive = false; p.lives = 0; p.hop = null; p.queued = null; p.reason = reason; p.simAt = at;
     }
@@ -222,7 +227,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
         p.connected = true; p.socketId = socket.id; p.disconnectedAt = null; p.queued = null;
         if (!p.alive && p.lives > 0 && ['lobby','kickoff'].includes(round.phase)) spawn(p, [...players.keys()].indexOf(p.id), at);
       }
-      if(resumed&&typeof socket.handshake.auth?.name==='string')p.name=cleanName(socket.handshake.auth.name);
+      if(resumed&&typeof socket.handshake.auth?.name==='string')rename(p,socket.handshake.auth.name);
       socket.data.playerId = p.id; socket.data.roomCode = code; socket.join(code);
       socket.compress(false).emit('init', { id: p.id, name: p.name, session: p.session, resumed, ack: p.ack, maxPlayers: MAX, room: info() });
       const packet=state(at);sendState(socket,packet,p,metadata(packet),true);
@@ -238,8 +243,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
         simulate(p, at);
       });
       socket.on('name', (value,reply) => {
-        if(typeof value!=='string')return;p.name=cleanName(value);socket.handshake.auth.name=p.name;
-        const result=round.standings?.find(row=>row[0]===p.id);if(result)result[1]=p.name;
+        if(typeof value!=='string')return;rename(p,value);socket.handshake.auth.name=p.name;
         if(typeof reply==='function')reply(p.name);
       });
       function captainAction(action) {
