@@ -18,6 +18,8 @@ button:focus-visible{outline:2px solid #88c6ff;outline-offset:3px}.lobby-control
 .settings-toggle{display:block;min-height:44px}.app:not(.settings-open) .toolbar,.app:not(.settings-open) .mode-status{display:none}.app:not(.settings-open) .scoreboard{justify-content:center}.app:not(.settings-open) .room-feedback{display:none}.app.playing:not(.settings-open) .rooms-bar{display:none}.app:not(.settings-open):not(.playing) .rooms-bar{display:flex}.app:not(.settings-open) .legend,.app:not(.settings-open) .footnote{display:none}.app .lobby-control{display:none!important}.app.settings-open .toolbar input{display:block}.app.settings-open .action.secondary{display:block}.app.settings-open{height:auto;min-height:100dvh}.app.settings-open .stage{min-height:240px;flex:none}body.menu-open{overflow:auto}.room-actions{margin-left:0}.room-identity{margin-right:auto}.how-to{font-size:11px;color:#d1e3f7;line-height:1.7;margin-top:10px;max-width:310px}.how-to b{color:white}.how-to[hidden]{display:none}.instructions{max-width:430px}.settings-toggle{flex-shrink:0}.header .eyebrow{letter-spacing:.12em}.overlay .message p{max-width:330px}.app:not(.settings-open) .stats{gap:clamp(16px,5vw,60px)}@media(max-height:650px){.app:not(.settings-open):not(.playing) .rooms-bar{display:flex;padding:6px 8px}.app:not(.settings-open):not(.playing) .room-actions{gap:4px}.app:not(.settings-open):not(.playing) .room-button{padding:6px 8px}.how-to{font-size:10px;line-height:1.4;margin-top:6px}.overlay.kickoff .message{padding:8px 12px}.app.settings-open{min-height:var(--app-height,100vh)}}@media(max-width:420px){.room-actions{width:100%;margin-left:0}.room-identity{display:none}.rooms-bar{padding:7px}.room-actions .room-button{padding:8px;font-size:10px}.room-actions input{width:73px}.stats{width:100%;justify-content:space-around}.sound-control{padding:7px;font-size:10px}.settings-toggle{padding:7px;font-size:10px}.footer{gap:5px}.dpad{gap:3px}.app:not(.settings-open) .instructions{display:none}.message h2{font-size:21px}.game-broadcast{font-size:8px}.how-to{font-size:10px}}
 
 .name-picker{display:flex;flex-direction:column;gap:3px;min-width:120px}.name-picker label{font-size:8px;letter-spacing:.1em;color:#b4d6ff;font-weight:850}.name-picker input{width:145px;max-width:100%;background:#071e37;border:1px solid #80bdff70;border-radius:7px;color:#fff;font:inherit;font-size:13px;padding:8px 10px;min-height:40px;outline:none}.name-picker input:focus{border-color:#a8d5ff;box-shadow:0 0 0 2px #80bdff30}.rooms-bar.has-feedback .room-feedback{display:block!important}.rooms-bar.has-error .room-feedback{color:#ffd18a}.room-actions[aria-busy=true]{opacity:.65}.room-actions input:focus-visible{outline:2px solid #a8d5ff;outline-offset:2px}@media(max-width:760px){.name-picker{flex:1;min-width:120px}.name-picker input{width:100%}.room-identity{min-width:90px}.room-actions{flex-basis:100%;justify-content:flex-start;gap:5px}.room-actions form{flex:1;min-width:150px}.room-actions input{flex:1;width:95px}.room-actions .room-button{min-height:40px}.rooms-bar{gap:7px}.app.settings-open .name-picker input{display:block}}@media(max-width:420px){.room-identity{display:block;min-width:90px}.name-picker{min-width:0}.name-picker input{font-size:16px;padding:7px 9px}.room-actions form{min-width:120px}.room-actions input{min-width:55px;width:70px;font-size:16px}.room-actions .room-button{font-size:10px;padding:7px}.room-identity strong{font-size:12px}}@media(max-height:650px){.name-picker{flex-direction:row;align-items:center;gap:7px}.name-picker input{min-height:35px;max-width:180px}.rooms-bar .room-feedback{font-size:10px}}
+.room-feedback{overflow-wrap:anywhere}.dpad button:disabled{opacity:.35;cursor:default}
+.app.settings-open .stage{height:clamp(180px,45vh,480px);min-height:180px;flex:none}
 </style>
 </head>
 <body>
@@ -336,8 +338,10 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   const TEAMS = Game.OPPONENTS;
   for (const [index,team] of TEAMS.entries()) { const el = document.createElement('span'); el.dataset.stage=index; el.textContent = team.short; el.title = `${index*Game.STAGE_YARDS}–${(index+1)*Game.STAGE_YARDS} yards · ${team.name}`; el.style.setProperty('--team', team.color); $('legend').appendChild(el); }
   const save = { get(key, fallback) { try { return localStorage.getItem(key) || fallback; } catch { return fallback; } }, set(key,value) { try { localStorage.setItem(key,value); } catch {} } };
+  const rememberName=value=>{save.set('crossyName',value);try{sessionStorage.setItem('cougarPlayerName',value);}catch{}};
+  let preferredName=save.get('crossyName','');try{preferredName=sessionStorage.getItem('cougarPlayerName')??preferredName;}catch{}
   let best = Number(save.get('cougarBest', 0)) || 0;
-  $('best').textContent = best; $('name').value = save.get('crossyName','');
+  $('best').textContent = best; $('name').value = preferredName;
   if (typeof io !== 'function') {
     $('title').textContent = 'Open the running game';
     $('detail').textContent = 'Use http://localhost:3001. This multiplayer game needs its Node server.';
@@ -434,11 +438,12 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   setInterval(syncClock,5000);
   socket.on('init',data=>{
     clearTimeout(roomTimer);snapshotSetup=null;roomBusy=false;roomFailure='';full=false;sessionReplaced=false;connected=true;round=null;model=null;rawSelf=null;snapshots=[];pending=[];lastPacket=0;clearInput();
+    setSettings(false);
     roomContext=data.room||{id:'PUBLIC',code:'PUBLIC',kind:'public',label:'Public game'};
     roomAuth={roomAction:roomContext.kind==='public'?'public':'resume',roomCode:roomContext.id,roomKind:roomContext.kind};
     try{sessionStorage.setItem('cougarRoom',JSON.stringify(roomContext));}catch{}
     const url=new URL(location.href);if(roomContext.kind==='private')url.searchParams.set('room',roomContext.code);else url.searchParams.delete('room');history.replaceState(null,'',url);
-    if(!nameDirty&&data.name){playerName=data.name;if(data.name!=='Cougar Fan'||$('name').value)$('name').value=data.name;}
+    if(!nameDirty&&data.name){playerName=data.name;if(data.name!=='Cougar Fan'||$('name').value)$('name').value=data.name;try{sessionStorage.setItem('cougarPlayerName',$('name').value);}catch{}}
     setRoomBusy(false);document.querySelector('.rooms-bar').classList.remove('has-feedback','has-error');
     if(roomContext.kind==='private')$('room-code').value=roomContext.code;
     text('room-label',roomContext.label);$('solo-room').disabled=roomContext.kind==='solo';$('copy-room').hidden=roomContext.kind!=='private';$('public-room').hidden=roomContext.kind==='public';
@@ -456,7 +461,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   function cleanPlayerName(value){return value.normalize('NFKC').replace(/[^\p{L}\p{M}\p{N} _.'’\-]/gu,'').replace(/\s+/g,' ').trim().slice(0,16)||'Cougar Fan';}
   function saveName(normalize=false){
     clearTimeout(nameTimer);const draft=$('name').value,value=cleanPlayerName(draft);
-    playerName=value;save.set('crossyName',value==='Cougar Fan'&&!draft?'':value);
+    playerName=value;rememberName(value==='Cougar Fan'&&!draft?'':value);
     if(normalize)$('name').value=draft?value:'';
     socket.auth=auth();
     if(socket.connected)socket.emit('name',value,accepted=>{
@@ -466,7 +471,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   socket.on('roomError',data=>{clearTimeout(roomTimer);setRoomBusy(false);const message=data?.message||'Unable to join that room.';roomFailure=message;roomMessage(message,true);if(!roomContext)$('public-room').hidden=false;showToast(message);});
   function switchRoom(action,code=''){
     if(roomBusy)return;
-    if(action==='join'&&code===roomContext?.code){showToast('You’re already in this room.');return;}
+    if(action==='join'&&code===roomContext?.code){roomFailure='';roomMessage('You’re already in this room.');showToast('You’re already in this room.');return;}
     saveName(true);setRoomBusy(true);roomFailure='';clearTimeout(roomTimer);clearInput();
     roomMessage(action==='join'?`Joining room ${code}…`:'Opening your game…',true);
     if(socket.connected)socket.emit('room',{action,code,name:playerName});
@@ -510,7 +515,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     $('mode').disabled=!isCaptain;$('game-mode').disabled=!isCaptain;$('game-mode').value=state.selectedGameMode||round.gameMode||'course';
     const gameLabel=value=>value==='endless'?'Endless ∞':'1,200 yd course';
     const active=`${Game.MODES[round.difficulty||'easy'].label} · ${gameLabel(round.gameMode)}`, next=`${Game.MODES[state.selectedDifficulty||round.difficulty||'easy'].label} · ${gameLabel(state.selectedGameMode||round.gameMode)}`;
-    text('mode-status',active===next?`${active} · ${isCaptain?'Your settings':'Captain chooses settings'}`:`${active} now · ${next} next kickoff`);
+    text('mode-status',(active===next?`${active} · ${isCaptain?'Your settings':'Captain chooses settings'}`:`${active} now · ${next} next kickoff`)+(round.phase==='running'?' · Live play continues while Settings is open.':''));
     snapshots.push({t:state.t,players:state.players,byId:new Map(state.players.map(p=>[p[0],p]))});while(snapshots.length>30)snapshots.shift();
     if(rawSelf?.alive&&!state.self.alive&&!changed){if(state.self.reason==='finished'){stadiumAudio.touchdown();showToast('Course complete! You’re safe. Watching the remaining runners.');}else{stadiumAudio.impact(state.self.reason==='water');showToast(`Eliminated: ${state.self.reason||'tackle'}. Watching the field.`);}}
     if(!changed&&rawSelf?.alive&&state.self.alive&&Math.floor(state.self.score/20)>Math.floor(rawSelf.score/20))celebrate(Math.floor(state.self.score/20)*100);
@@ -554,21 +559,28 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     const next=TEAMS[rules.endless?(stage.index+1)%TEAMS.length:stage.index+1];
     text('next-stage',next?`Next: ${next.name} · ${stage.endYards.toLocaleString()} yd`:`Finish: ${stage.endYards.toLocaleString()} yd · beat Notre Dame`);
   }
-  function setSettings(open){document.querySelector('.app').classList.toggle('settings-open',open);document.body.classList.toggle('menu-open',open);$('settings-toggle').setAttribute('aria-expanded',String(open));text('settings-toggle',open?'Back to game':'Settings');clearInput();if(!open)window.scrollTo(0,0);}
+  function setSettings(open){for(const button of document.querySelectorAll('.dpad button'))button.disabled=open;document.querySelector('.app').classList.toggle('settings-open',open);document.body.classList.toggle('menu-open',open);$('settings-toggle').setAttribute('aria-expanded',String(open));text('settings-toggle',open?'Back to game':'Settings');clearInput();if(!open)window.scrollTo(0,0);}
   $('settings-toggle').addEventListener('click',()=>setSettings(!document.querySelector('.app').classList.contains('settings-open')));
   window.addEventListener('keydown',event=>{if(event.key==='Escape')setSettings(false);});
   $('game-mode').addEventListener('change',()=>{socket.emit('gameMode',$('game-mode').value);canvas.focus({preventScroll:true});});
   $('mode').addEventListener('change',()=>{socket.emit('difficulty',$('mode').value);canvas.focus({preventScroll:true});});
   $('fill').addEventListener('click',()=>{if(connected)socket.emit('fillBots');canvas.focus({preventScroll:true});});
-  const restart=()=>{saveName(true);if(!connected||full){socket.auth=auth();socket.connect();}else{socket.emit('restart');setSettings(false);}canvas.focus({preventScroll:true});};
+  const restart=()=>{
+    saveName(true);
+    const needsReconnect=!connected||full||sessionReplaced||!lastPacket||performance.now()-lastPacket>=3000;
+    if(needsReconnect){clearInput();socket.disconnect();socket.auth=auth();socket.connect();}
+    else{socket.emit('restart');setSettings(false);}
+    canvas.focus({preventScroll:true});
+  };
   $('lobby').addEventListener('click',()=>{socket.emit('lobby');canvas.focus({preventScroll:true});});
   $('restart').addEventListener('click',restart);$('retry').addEventListener('click',restart);
-  $('name').addEventListener('input',()=>{nameDirty=true;save.set('crossyName',$('name').value);clearTimeout(nameTimer);nameTimer=setTimeout(()=>saveName(),300);});
+  $('name').addEventListener('input',()=>{nameDirty=true;rememberName($('name').value);clearTimeout(nameTimer);nameTimer=setTimeout(()=>saveName(),300);});
   $('name').addEventListener('blur',()=>saveName(true));
   $('name').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();saveName(true);$('name').blur();}});
   const directions={ArrowUp:[0,1],KeyW:[0,1],ArrowLeft:[-1,0],KeyA:[-1,0],ArrowRight:[1,0],KeyD:[1,0]};
   window.addEventListener('keydown',e=>{
     if(e.target instanceof HTMLInputElement||e.target instanceof HTMLSelectElement||e.target instanceof HTMLTextAreaElement||e.target.isContentEditable)return;
+    if(document.querySelector('.app').classList.contains('settings-open'))return;
     const direction=directions[e.code];if(!direction)return;e.preventDefault();
     if(!keys.has(e.code)){keys.set(e.code,direction);buffered=direction;}
   });
@@ -590,7 +602,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   canvas.addEventListener('pointerup',e=>{if(!swipe||e.pointerId!==swipe.id)return;const dx=e.clientX-swipe.x,dy=e.clientY-swipe.y;buffered=Math.hypot(dx,dy)<18?[0,1]:Math.abs(dx)>Math.abs(dy)?[Math.sign(dx),0]:dy<0?[0,1]:null;swipe=null;});
   canvas.addEventListener('pointercancel',e=>{if(swipe?.id===e.pointerId)swipe=null;});
   function input(at){
-    if(roomBusy||!connected||performance.now()-lastPacket>1200||round?.phase!=='running'||!model?.alive||model.hop||model.queued||at<model.nextStep||at<nextSend||at-rawSelf.simAt>Math.max(250,ping+150))return;
+    if(document.querySelector('.app').classList.contains('settings-open')||roomBusy||!connected||performance.now()-lastPacket>1200||round?.phase!=='running'||!model?.alive||model.hop||model.queued||at<model.nextStep||at<nextSend||at-rawSelf.simAt>Math.max(250,ping+150))return;
     const direction=buffered||pointerDir||[...keys.values()].slice(-1)[0];if(!direction)return;buffered=null;
     nextSend=at+Game.STEP_MS;
     if(rules.beginHop(model,...direction,at,round.seed)){
