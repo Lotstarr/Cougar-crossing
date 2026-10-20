@@ -56,7 +56,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
     function spawn(p, index, at) {
       const startY = -(Math.floor(index / 12)) || 0;
       Object.assign(p, { pressureY: startY - 1.5, pressurePeak: startY, pressureAt: at, x: ((index * 7 + 5) % 12) + 0.5, y: startY,
-        alive: p.bot || p.connected, lives: 1, score: 0, hop: null, nextStep: at, simAt: at,
+        ready: !!p.bot, alive: p.bot || p.connected, lives: 1, score: 0, hop: null, nextStep: at, simAt: at,
         ack: 0, queued: null, reason: '', finishedAt: null, aiAt: at + 200 + Math.random() * 400 });
       if (p.alive && !['running','over'].includes(round.phase)) entrantRecords.set(p.id,p);
     }
@@ -137,6 +137,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
     }
     function state(at) {
       return { t: at, round: { ...round }, count: players.size, alive: alive().length, botMode, teamMode,
+        members: [...players.values()].map(p => [p.id, +p.bot, +p.connected, +(p.ready || p.id === hostId())]),
         room: info(), hostId: hostId(), humanCount: connectedHumans().length, selectedDifficulty, selectedGameMode,
         players: [...players.values()].map(p => [p.id, +p.x.toFixed(4), +p.y.toFixed(4), +p.alive, p.color, p.name]) };
     }
@@ -246,6 +247,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
         if(typeof value!=='string')return;rename(p,value);socket.handshake.auth.name=p.name;
         if(typeof reply==='function')reply(p.name);
       });
+      socket.on('ready', value => { if (round.phase === 'lobby' && typeof value === 'boolean') p.ready = value; });
       function captainAction(action) {
         if (p.id !== hostId()) { socket.emit('notice','The team captain controls the next kickoff.'); return; }
         if (now() - p.lastAction < 750) { socket.emit('notice','Please wait a moment before the next kickoff action.'); return; }
@@ -281,7 +283,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
         players.delete(p.id); if (typeof reply === 'function') reply(true); socket.disconnect(true);
       });
       socket.on('disconnect', () => {
-        if (players.has(p.id) && p.socketId === socket.id) { p.connected = false; p.disconnectedAt = now(); p.queued = null; }
+        if (players.has(p.id) && p.socketId === socket.id) { p.ready = false; p.connected = false; p.disconnectedAt = now(); p.queued = null; }
       });
     }
 
@@ -290,7 +292,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       const p = players.get(socket.data.playerId);
       if (p && p.socketId === socket.id) players.delete(p.id);
       socket.leave(code);
-      for (const name of ['move','name','difficulty','gameMode','fillBots','restart','lobby','leave','disconnect']) socket.removeAllListeners(name);
+      for (const name of ['move','name','ready','difficulty','gameMode','fillBots','restart','lobby','leave','disconnect']) socket.removeAllListeners(name);
       if (!humans().length && code !== 'PUBLIC') { players.clear(); rooms.delete(code); }
     }
     return { code, kind, players, tick, accept, remove, info, get round() { return round; } };
@@ -328,7 +330,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       if (!destination && action === 'resume' && socket.handshake.auth?.roomKind === 'solo') {
         destination = newRoom('solo'); freshSolo = true;
       }
-      if (!destination) return fail('That room was not found. Check the code or create a new room.');
+      if (!destination) return socket.emit('roomError', { code: 'ROOM_EXPIRED', message: 'This room has closed or expired. Create a new room, join another code, or play Solo.' });
       if (destination.kind === 'solo' && !freshSolo) {
         const owner = [...destination.players.values()].find(p => !p.bot && p.session === socket.handshake.auth?.session);
         if (!owner) return fail('Solo games are private. Create a room to play with friends.');

@@ -20,9 +20,9 @@ Play alone, invite your team into a private room, or join the public game.
 ## How to play
 
 1. Enter **Your name** above the game (it is remembered on this device). Choose **Play solo**, **Create team**, or enter a room code or paste an invite link and select **Join room**. You can also stay in the public game.
-2. Open **Settings** to choose your name, difficulty, game mode, or practice bots.
+2. Open **Settings** to choose difficulty, game mode, or practice bots.
 3. If playing with friends, select **Copy invite** in your private room and share the invitation.
-4. The captain presses **Start game** when everyone is ready.
+4. Teammates can press **I’m ready**. The roster shows names, captain, readiness, and reconnecting players. Readiness is advisory; the captain presses **Start game** when the team is ready.
 5. Cross lanes, ride rafts, and keep moving forward. The pressure line keeps closing in when you pause.
 
 | Control | Action |
@@ -34,7 +34,7 @@ Play alone, invite your team into a private room, or join the public game.
 | Settings | Change game options or manage your room |
 | Sound | Mute or enable audio |
 
-Backward movement is disabled. There are no extra lives. Finishers become safe spectators while the remaining runners keep playing. A course round ends only after everyone has finished or been knocked out, including the last active runner. Finishers rank by completion time; non-finishers rank by distance. Final standings show every entrant. Eliminated players watch the remaining runners. New arrivals during a round wait for the next kickoff.
+Backward movement is disabled. There are no extra lives. Finishers become safe spectators while the remaining runners keep playing. A course round ends only after everyone has finished or been knocked out, including the last active runner. Finishers rank by completion time; non-finishers rank by distance. Final standings show every entrant. Eliminated players watch the leading remaining runner; a spectator panel shows their name, remaining runners, and finished count. New arrivals during a round wait for the next kickoff.
 
 Audio begins after your first tap or keypress. The mute setting is remembered on your device.
 
@@ -140,3 +140,9 @@ The name field is visible in the lobby on desktop and mobile. Names update autom
 ### Settings and reconnect behavior
 
 Opening Settings clears movement input and disables the on-screen arrows; live multiplayer play and pressure continue. A reconnect action reconnects the existing session instead of starting another round. Each tab remembers its own player name, while the last chosen name remains the default for new tabs. Renaming on the results screen updates both the standings and the winner announcement.
+
+## Latest multiplayer checks
+
+On October 20, 2026, a 30-second test against the Render deployment connected 40 simulated WebSocket players in a separate private room. The slowest client received 19.66 snapshots/second; 95th-percentile round-trip latency was 157 ms. All clients moved, a full-room session reconnected successfully, and a 41st player was rejected. A local mixed-transport run also passed with 32 WebSocket and eight polling clients, with no server ticks exceeding 50 ms. These are short automated checks, not a guarantee for 40 physical devices or every network.
+
+Mobile layouts are reviewed at 320×568, 390×844, and 844×390. Real iOS/Android keyboard and background-app behavior should still be checked on devices before an event. Reconnecting never pauses the round or grants another life.
