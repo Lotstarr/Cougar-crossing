@@ -1,0 +1,24 @@
+{
+  "name": "crossy-royale",
+  "version": "1.0.0",
+  "private": true,
+  "description": "An easy BYU football themed multiplayer crossing game",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test",
+    "sync-physics": "node scripts/sync-physics.js",
+    "check-online": "node scripts/check-online.js",
+    "check-multiplayer": "node scripts/check-multiplayer.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.4"
+  }
+}
