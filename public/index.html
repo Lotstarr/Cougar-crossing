@@ -16,13 +16,15 @@ button:focus-visible{outline:2px solid #88c6ff;outline-offset:3px}.lobby-control
 
 /* Keep the field primary; setup controls are revealed explicitly. */
 .settings-toggle{display:block;min-height:44px}.app:not(.settings-open) .toolbar,.app:not(.settings-open) .mode-status{display:none}.app:not(.settings-open) .scoreboard{justify-content:center}.app:not(.settings-open) .room-feedback{display:none}.app.playing:not(.settings-open) .rooms-bar{display:none}.app:not(.settings-open):not(.playing) .rooms-bar{display:flex}.app:not(.settings-open) .legend,.app:not(.settings-open) .footnote{display:none}.app .lobby-control{display:none!important}.app.settings-open .toolbar input{display:block}.app.settings-open .action.secondary{display:block}.app.settings-open{height:auto;min-height:100dvh}.app.settings-open .stage{min-height:240px;flex:none}body.menu-open{overflow:auto}.room-actions{margin-left:0}.room-identity{margin-right:auto}.how-to{font-size:11px;color:#d1e3f7;line-height:1.7;margin-top:10px;max-width:310px}.how-to b{color:white}.how-to[hidden]{display:none}.instructions{max-width:430px}.settings-toggle{flex-shrink:0}.header .eyebrow{letter-spacing:.12em}.overlay .message p{max-width:330px}.app:not(.settings-open) .stats{gap:clamp(16px,5vw,60px)}@media(max-height:650px){.app:not(.settings-open):not(.playing) .rooms-bar{display:flex;padding:6px 8px}.app:not(.settings-open):not(.playing) .room-actions{gap:4px}.app:not(.settings-open):not(.playing) .room-button{padding:6px 8px}.how-to{font-size:10px;line-height:1.4;margin-top:6px}.overlay.kickoff .message{padding:8px 12px}.app.settings-open{min-height:var(--app-height,100vh)}}@media(max-width:420px){.room-actions{width:100%;margin-left:0}.room-identity{display:none}.rooms-bar{padding:7px}.room-actions .room-button{padding:8px;font-size:10px}.room-actions input{width:73px}.stats{width:100%;justify-content:space-around}.sound-control{padding:7px;font-size:10px}.settings-toggle{padding:7px;font-size:10px}.footer{gap:5px}.dpad{gap:3px}.app:not(.settings-open) .instructions{display:none}.message h2{font-size:21px}.game-broadcast{font-size:8px}.how-to{font-size:10px}}
+
+.name-picker{display:flex;flex-direction:column;gap:3px;min-width:120px}.name-picker label{font-size:8px;letter-spacing:.1em;color:#b4d6ff;font-weight:850}.name-picker input{width:145px;max-width:100%;background:#071e37;border:1px solid #80bdff70;border-radius:7px;color:#fff;font:inherit;font-size:13px;padding:8px 10px;min-height:40px;outline:none}.name-picker input:focus{border-color:#a8d5ff;box-shadow:0 0 0 2px #80bdff30}.rooms-bar.has-feedback .room-feedback{display:block!important}.rooms-bar.has-error .room-feedback{color:#ffd18a}.room-actions[aria-busy=true]{opacity:.65}.room-actions input:focus-visible{outline:2px solid #a8d5ff;outline-offset:2px}@media(max-width:760px){.name-picker{flex:1;min-width:120px}.name-picker input{width:100%}.room-identity{min-width:90px}.room-actions{flex-basis:100%;justify-content:flex-start;gap:5px}.room-actions form{flex:1;min-width:150px}.room-actions input{flex:1;width:95px}.room-actions .room-button{min-height:40px}.rooms-bar{gap:7px}.app.settings-open .name-picker input{display:block}}@media(max-width:420px){.room-identity{display:block;min-width:90px}.name-picker{min-width:0}.name-picker input{font-size:16px;padding:7px 9px}.room-actions form{min-width:120px}.room-actions input{min-width:55px;width:70px;font-size:16px}.room-actions .room-button{font-size:10px;padding:7px}.room-identity strong{font-size:12px}}@media(max-height:650px){.name-picker{flex-direction:row;align-items:center;gap:7px}.name-picker input{min-height:35px;max-width:180px}.rooms-bar .room-feedback{font-size:10px}}
 </style>
 </head>
 <body>
 <div class="app">
 <header class="header"><div class="identity"><div class="mark" aria-hidden="true">Y</div><div><div class="eyebrow">PROVO, UTAH · GAME DAY 2026</div><h1>COUGAR CROSSING</h1></div></div><div class="connection"><i class="dot" id="dot"></i><span id="connection">Connecting…</span></div></header>
-<section class="rooms-bar" aria-label="Game rooms"><div class="room-identity"><small>YOUR GAME</small><strong id="room-label">Public game</strong></div><div class="room-actions"><button class="room-button" id="solo-room">Play solo</button><button class="room-button" id="create-room">Create team</button><form id="join-room"><label class="sr-only" for="room-code">Room code</label><input id="room-code" maxlength="6" placeholder="ROOM CODE" autocomplete="off" autocapitalize="characters" spellcheck="false" required pattern="[A-Za-z2-9]{6}"><button class="room-button" type="submit">Join</button></form><button class="room-button" id="copy-room" hidden>Invite teammates</button><button class="room-button subtle" id="public-room" hidden>Public game</button></div><div id="room-feedback" class="room-feedback" role="status">Play with everyone, go solo, or create a private room for your team.</div></section>
-<section class="scoreboard" aria-label="Game scoreboard"><div class="stats"><div class="stat"><small>IN PLAY</small><strong id="alive">0 <span>/ 40</span></strong></div><div class="stat"><small>YARDS</small><strong id="score">0</strong></div><div class="stat"><small>BEST</small><strong id="best">0</strong></div><div class="stat"><small>STATUS</small><strong class="status" id="lives">IN PLAY</strong></div></div><div class="toolbar"><div class="mode-picker"><label for="game-mode">GAME MODE</label><select id="game-mode" aria-describedby="mode-status" disabled><option value="course">1,200 yd course</option><option value="endless">Endless ∞</option></select></div><div class="mode-picker"><label for="mode">DIFFICULTY</label><select id="mode" aria-describedby="mode-status" disabled><option value="easy">Easy</option><option value="normal">Normal</option><option value="hard">Hard</option></select></div><input id="name" maxlength="16" placeholder="Your name" aria-label="Player name"><button class="action secondary" id="restart">New kickoff</button><button class="action secondary lobby-control" id="lobby">Team lobby</button><button class="action" id="fill">Fill with 39 Bots</button></div></section>
+<section class="rooms-bar" aria-label="Game rooms"><div class="room-identity"><small>YOUR GAME</small><strong id="room-label">Public game</strong></div><div class="name-picker"><label for="name">YOUR NAME</label><input id="name" maxlength="16" placeholder="e.g. Cosmo" aria-describedby="name-help" autocomplete="nickname" spellcheck="false"><span id="name-help" class="sr-only">Choose a name, up to 16 characters. It is saved on this device.</span></div><div class="room-actions"><button class="room-button" id="solo-room">Play solo</button><button class="room-button" id="create-room">Create team</button><form id="join-room"><label class="sr-only" for="room-code">Room code</label><input id="room-code" maxlength="256" placeholder="Code or invite" aria-label="Room code or invite link" aria-describedby="room-feedback" autocomplete="off" autocapitalize="characters" spellcheck="false" required><button class="room-button" type="submit" id="join-button">Join room</button></form><button class="room-button" id="copy-room" hidden>Copy invite</button><button class="room-button subtle" id="public-room" hidden>Public game</button></div><div id="room-feedback" class="room-feedback" role="status">Play with everyone, go solo, or create a private room for your team.</div></section>
+<section class="scoreboard" aria-label="Game scoreboard"><div class="stats"><div class="stat"><small>IN PLAY</small><strong id="alive">0 <span>/ 40</span></strong></div><div class="stat"><small>YARDS</small><strong id="score">0</strong></div><div class="stat"><small>BEST</small><strong id="best">0</strong></div><div class="stat"><small>STATUS</small><strong class="status" id="lives">IN PLAY</strong></div></div><div class="toolbar"><div class="mode-picker"><label for="game-mode">GAME MODE</label><select id="game-mode" aria-describedby="mode-status" disabled><option value="course">1,200 yd course</option><option value="endless">Endless ∞</option></select></div><div class="mode-picker"><label for="mode">DIFFICULTY</label><select id="mode" aria-describedby="mode-status" disabled><option value="easy">Easy</option><option value="normal">Normal</option><option value="hard">Hard</option></select></div><button class="action secondary" id="restart">New kickoff</button><button class="action secondary lobby-control" id="lobby">Team lobby</button><button class="action" id="fill">Fill with 39 Bots</button></div></section>
 <section class="matchup" aria-label="Opponent difficulty"><div class="matchup-team"><span class="opponent-icon" id="opponent-icon">UT</span><div><small id="stage-number">STAGE 1 / 12 · WARMUP</small><strong id="opponent-name">Utah Tech</strong></div></div><div class="matchup-progress"><span id="next-stage">Next: Colorado State · 100 yd</span><div class="progress-track"><i id="stage-progress"></i></div></div></section>
 <div class="mode-status" id="mode-status" role="status">Easy · captain selects difficulty</div>
 <main class="stage" id="stage"><canvas id="game" tabindex="0" aria-label="Football crossing game. Move forward or sideways with arrows or W A D."></canvas><div class="field-label"><span class="pill easy" id="difficulty-label">WARMUP</span><span class="pill">GRIDIRON · 12 COLUMNS</span></div><div class="overlay" id="overlay"><div class="message"><h2 id="title">Taking the field…</h2><p id="detail">Getting ready for kickoff.</p><div class="how-to" id="how-to" hidden><b>Move:</b> hold ↑ ← → or W A D, or use the buttons.<br><b>Cross:</b> dodge defenders and ride rafts across water.<br><b>Keep going:</b> stay ahead of the pressure line. One life.</div><div class="results-board" id="results-board" hidden><h3>FINAL STANDINGS</h3><ol id="results-list"></ol><div class="your-rank" id="your-rank"></div></div><button class="action" id="retry" hidden>Kick off again</button></div></div><div class="toast" id="toast" hidden></div><div class="game-broadcast" id="game-broadcast">BYU RETURN<small id="broadcast-detail">LAVELL EDWARDS STADIUM</small></div><div class="celebration" id="celebration" role="status" hidden><strong>TOUCHDOWN!</strong><span id="celebration-detail"></span></div><div class="you-note" id="note">White BYU jersey = YOU · One hop per cell</div></main>
@@ -343,9 +345,11 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   }
   let session='';try{session=sessionStorage.getItem('cougarSession')||'';}catch{}
   let roomContext=null, roomBusy=false, roomTimer=null, roomFailure='', snapshotSetup=null;
+  let nameTimer=null,nameDirty=false,playerName=$('name').value||'Cougar Fan';
   let savedRoom=null;try{savedRoom=JSON.parse(sessionStorage.getItem('cougarRoom')||'null');}catch{}
   const inviteCode=new URL(location.href).searchParams.get('room')?.trim().toUpperCase();
   const initialCode=inviteCode||savedRoom?.id||'PUBLIC';
+  if(inviteCode)$('room-code').value=inviteCode;
   let roomAuth={roomAction:inviteCode&&inviteCode!==savedRoom?.id?'join':initialCode==='PUBLIC'?'public':'resume',roomCode:initialCode,roomKind:savedRoom?.kind||'public'};
   const auth=()=>({name:$('name').value,session,snapshotVersion:2,...roomAuth});
   const socket = io({ auth: auth(), transports:['websocket','polling'],tryAllTransports:true,timeout:7000,reconnectionDelay:500 });
@@ -424,7 +428,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   }
   socket.on('connect',()=>{connected=true;full=false;sessionReplaced=false;bestRtt=Infinity;clockReady=false;needsRebase=true;syncClock();});
   socket.on('disconnect',()=>{connected=false;pending=[];clearInput();});
-  socket.on('connect_error',()=>{connected=false;});
+  socket.on('connect_error',()=>{connected=false;setRoomBusy(false);roomMessage('Connecting… The free server can take about a minute to wake up.',true);});
   socket.on('full',()=>{full=true;connected=false;});
   socket.on('sessionReplaced',()=>{sessionReplaced=true;clearInput();});
   setInterval(syncClock,5000);
@@ -434,26 +438,59 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     roomAuth={roomAction:roomContext.kind==='public'?'public':'resume',roomCode:roomContext.id,roomKind:roomContext.kind};
     try{sessionStorage.setItem('cougarRoom',JSON.stringify(roomContext));}catch{}
     const url=new URL(location.href);if(roomContext.kind==='private')url.searchParams.set('room',roomContext.code);else url.searchParams.delete('room');history.replaceState(null,'',url);
+    if(!nameDirty&&data.name){playerName=data.name;if(data.name!=='Cougar Fan'||$('name').value)$('name').value=data.name;}
+    setRoomBusy(false);document.querySelector('.rooms-bar').classList.remove('has-feedback','has-error');
+    if(roomContext.kind==='private')$('room-code').value=roomContext.code;
     text('room-label',roomContext.label);$('solo-room').disabled=roomContext.kind==='solo';$('copy-room').hidden=roomContext.kind!=='private';$('public-room').hidden=roomContext.kind==='public';
     text('room-feedback',roomContext.kind==='solo'?'Your own game. You control difficulty, bots, and kickoff.':roomContext.kind==='private'?`Share code ${roomContext.code} or copy the invite link. The captain starts kickoff.`:'Play with everyone, go solo, or create a private room for your team.');
-    myId=data.id;seq=data.ack||0;pending=[];needsRebase=true;session=data.session||'';socket.auth=auth();try{sessionStorage.setItem('cougarSession',session);}catch{};});
+    myId=data.id;if(nameDirty)saveName();seq=data.ack||0;pending=[];needsRebase=true;session=data.session||'';socket.auth=auth();try{sessionStorage.setItem('cougarSession',session);}catch{};});
   socket.on('notice',showToast);
-  socket.on('roomError',data=>{clearTimeout(roomTimer);roomBusy=false;const message=data?.message||'Unable to join that room.';roomFailure=message;text('room-feedback',message);showToast(message);});
+  function roomMessage(message,visible=false){
+    text('room-feedback',message);const bar=document.querySelector('.rooms-bar');bar.classList.toggle('has-feedback',visible);bar.classList.toggle('has-error',visible&&!roomBusy);
+  }
+  function setRoomBusy(busy){
+    roomBusy=busy;document.querySelector('.room-actions').setAttribute('aria-busy',String(busy));
+    for(const button of document.querySelectorAll('.room-actions button'))button.disabled=busy||(button.id==='solo-room'&&roomContext?.kind==='solo');
+    text('join-button',busy?'Joining…':'Join room');
+  }
+  function cleanPlayerName(value){return value.normalize('NFKC').replace(/[^\p{L}\p{M}\p{N} _.'’\-]/gu,'').replace(/\s+/g,' ').trim().slice(0,16)||'Cougar Fan';}
+  function saveName(normalize=false){
+    clearTimeout(nameTimer);const draft=$('name').value,value=cleanPlayerName(draft);
+    playerName=value;save.set('crossyName',value==='Cougar Fan'&&!draft?'':value);
+    if(normalize)$('name').value=draft?value:'';
+    socket.auth=auth();
+    if(socket.connected)socket.emit('name',value,accepted=>{
+      if(typeof accepted==='string'&&cleanPlayerName($('name').value)===value){playerName=accepted;nameDirty=false;}
+    });
+  }
+  socket.on('roomError',data=>{clearTimeout(roomTimer);setRoomBusy(false);const message=data?.message||'Unable to join that room.';roomFailure=message;roomMessage(message,true);if(!roomContext)$('public-room').hidden=false;showToast(message);});
   function switchRoom(action,code=''){
-    if(roomBusy)return;roomBusy=true;roomFailure='';clearTimeout(roomTimer);clearInput();text('room-feedback','Joining your game…');
-    if(socket.connected)socket.emit('room',{action,code});
-    else{roomAuth={roomAction:action,roomCode:code,roomKind:action==='solo'?'solo':'private'};socket.auth=auth();socket.connect();}
-    roomTimer=setTimeout(()=>{if(roomBusy){roomBusy=false;text('room-feedback','Still connecting. You can choose a game again.');}},8000);
+    if(roomBusy)return;
+    if(action==='join'&&code===roomContext?.code){showToast('You’re already in this room.');return;}
+    saveName(true);setRoomBusy(true);roomFailure='';clearTimeout(roomTimer);clearInput();
+    roomMessage(action==='join'?`Joining room ${code}…`:'Opening your game…',true);
+    if(socket.connected)socket.emit('room',{action,code,name:playerName});
+    else{socket.disconnect();roomAuth={roomAction:action,roomCode:code,roomKind:action==='solo'?'solo':action==='public'?'public':'private'};socket.auth=auth();socket.connect();}
+    roomTimer=setTimeout(()=>{if(roomBusy){setRoomBusy(false);roomMessage('Still connecting. The free server may take a minute to wake up. You can try again.',true);}},15000);
   }
   $('solo-room').addEventListener('click',()=>switchRoom('solo'));
   $('create-room').addEventListener('click',()=>switchRoom('create'));
   $('public-room').addEventListener('click',()=>switchRoom('public'));
-  $('join-room').addEventListener('submit',event=>{event.preventDefault();switchRoom('join',$('room-code').value.trim().toUpperCase());});
+  function roomCode(value){
+    value=value.trim();try{value=new URL(value).searchParams.get('room')||value;}catch{}
+    return value.replace(/^room[\s:#-]+/i,'').replace(/[\s-]/g,'').toUpperCase();
+  }
+  $('room-code').addEventListener('input',()=>{$('room-code').setCustomValidity('');});
+  $('join-room').addEventListener('submit',event=>{
+    event.preventDefault();const code=roomCode($('room-code').value);
+    if(!/^[A-HJ-NP-Z2-9]{6}$/.test(code)){$('room-code').setCustomValidity('Enter a 6-character room code, or paste the full invite link.');$('room-code').reportValidity();return;}
+    $('room-code').setCustomValidity('');$('room-code').value=code;switchRoom('join',code);
+  });
   $('copy-room').addEventListener('click',async()=>{
     if(roomContext?.kind!=='private')return;
     const url=new URL(location.href);url.searchParams.set('room',roomContext.code);
     try{await navigator.clipboard.writeText(url.href);showToast('Room invite copied!');}
-    catch{text('room-feedback',`Share this invite: ${url.href}`);}
+    catch{roomMessage(`Copy this invite: ${url.href}`,true);}
   });
   socket.on('snapshotSetup',setup=>{snapshotSetup=setup;});
   socket.on('snapshot',data=>{try{const state=Game.decodeSnapshot(data,snapshotSetup);if(state)applyState(state);}catch{showToast('Synchronizing game state…');}});
@@ -465,7 +502,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     if(!clockReady){offset=targetOffset=state.t-clientNow();lastServerNow=clientNow()+offset;}
     const changed=!round||round.id!==state.round.id;
     if(changed){celebrationUntil=0;confetti=[];lastHopAt=null;landingAt=-Infinity;lastResultsKey='';$('celebration').hidden=true;shownStage=-1;snapshots=[];pending=[];seq=state.self.ack||0;clearInput();nextSend=0;cameraReady=false;localView=null;renderError={x:0,y:0};hopLift=0;}
-    round=state.round;document.querySelector('.app').classList.toggle('playing',['kickoff','running'].includes(round.phase));
+    round=state.round;document.querySelector('.app').classList.toggle('playing',['kickoff','running'].includes(round.phase)&&state.self.alive);
     const rulesKey=`${round.difficulty||'easy'}:${round.gameMode||'course'}`;
     if(rulesMode!==rulesKey){rulesMode=rulesKey;rules=Game.withDifficulty(round.difficulty||'easy',round.gameMode||'course');shownStage=-1;}
     $('mode').value=state.selectedDifficulty||round.difficulty||'easy';
@@ -523,10 +560,12 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   $('game-mode').addEventListener('change',()=>{socket.emit('gameMode',$('game-mode').value);canvas.focus({preventScroll:true});});
   $('mode').addEventListener('change',()=>{socket.emit('difficulty',$('mode').value);canvas.focus({preventScroll:true});});
   $('fill').addEventListener('click',()=>{if(connected)socket.emit('fillBots');canvas.focus({preventScroll:true});});
-  const restart=()=>{if(!connected||full){socket.auth=auth();socket.connect();}else{socket.emit('restart');setSettings(false);}canvas.focus({preventScroll:true});};
+  const restart=()=>{saveName(true);if(!connected||full){socket.auth=auth();socket.connect();}else{socket.emit('restart');setSettings(false);}canvas.focus({preventScroll:true});};
   $('lobby').addEventListener('click',()=>{socket.emit('lobby');canvas.focus({preventScroll:true});});
   $('restart').addEventListener('click',restart);$('retry').addEventListener('click',restart);
-  $('name').addEventListener('change',()=>{save.set('crossyName',$('name').value);socket.auth=auth();socket.emit('name',$('name').value);});
+  $('name').addEventListener('input',()=>{nameDirty=true;save.set('crossyName',$('name').value);clearTimeout(nameTimer);nameTimer=setTimeout(()=>saveName(),300);});
+  $('name').addEventListener('blur',()=>saveName(true));
+  $('name').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();saveName(true);$('name').blur();}});
   const directions={ArrowUp:[0,1],KeyW:[0,1],ArrowLeft:[-1,0],KeyA:[-1,0],ArrowRight:[1,0],KeyD:[1,0]};
   window.addEventListener('keydown',e=>{
     if(e.target instanceof HTMLInputElement||e.target instanceof HTMLSelectElement||e.target instanceof HTMLTextAreaElement||e.target.isContentEditable)return;
@@ -754,6 +793,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     stadiumAudio.tick(at,gap,active,rawSelf?.score||0);
     if(!round||!model)return;
     const elapsed=['running','over'].includes(round.phase)?Math.max(0,Math.floor(((round.phase==='over'?round.frozenAt:at)-round.startedAt)/1000)):0;
+    text('note',`${playerName} · YOU · #${jersey(myId)}`);
     const broadcast=$('game-broadcast'),label=`BYU RETURN · #${jersey(myId)}`;
     if(broadcast.firstChild.nodeValue!==label)broadcast.firstChild.nodeValue=label;
     text('broadcast-detail',`${Math.floor(elapsed/60)}:${String(elapsed%60).padStart(2,'0')} · ${Math.floor((rawSelf?.score||0)/20)} TD · ${active&&gap<1.8?'PRESSURE!':'LAVELL EDWARDS STADIUM'}`);
@@ -854,7 +894,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     if(full){title='THE FIELD IS FULL';detail='40 players are on the field. Try joining again when a place opens.';retry=true;retryLabel='Try joining again';}
     else if(sessionReplaced){title='GAME OPEN IN ANOTHER TAB';detail='Your runner is active there. Reconnect here to move this session back.';retry=true;retryLabel='Play in this tab';}
     else if(roomFailure&&!round){title='CHOOSE A GAME';detail=roomFailure;}
-    else if(!fresh){title=lastPacket?'RECONNECTING…':'CONNECTING…';detail=lastPacket?'Your place and one-life run are held for 15 seconds.':'Connecting to the game server…';retry=true;retryLabel='Reconnect';}
+    else if(!fresh){title=lastPacket?'RECONNECTING…':'CONNECTING…';detail=lastPacket?'Your place and one-life run are held for 15 seconds.':'Connecting to the game. The free server can take about a minute to wake up.';retry=true;retryLabel='Reconnect';}
     else if(round?.phase==='lobby'){title=roomContext?.kind==='solo'?'READY TO RUN?':'READY FOR KICKOFF?';detail=roomContext?.kind==='solo'?'Your own game. Choose Settings for difficulty, Endless mode, or practice bots.':`${matchHumans} ${matchHumans===1?'player':'players'} ready. ${isCaptain?'Invite teammates or start when you’re ready.':'Waiting for your captain to start.'}`;retry=isCaptain;retryLabel='Start game';}
     else if(round?.phase==='kickoff'){
       const k=round.kickoff,opponent=TEAMS[k.team];
@@ -871,7 +911,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
       detail=`You’re safe! ${place>=0?`Finish #${place+1} · ${finishTime(own[1])}. `:''}Watching the remaining runners. Final standings appear when everyone finishes or is knocked out.`;
     }else if(model&&!model.alive){
       title='ON THE SIDELINE';
-      detail=model.reason==='Joining next kickoff'?'You’ll join at the next kickoff.':`Out: ${model.reason||'tackle'}. Watching the leader.${matchHumans===1?' Start a new kickoff to try again.':''}`;
+      detail=model.reason==='Joining next kickoff'?'You’re in! This round is underway. You’ll play at the next kickoff.':`Out: ${model.reason||'tackle'}. Watching the leader.${matchHumans===1?' Start a new kickoff to try again.':''}`;
       retry=matchHumans===1&&isCaptain;
     }
     $('how-to').hidden=!fresh||round?.phase!=='lobby';
