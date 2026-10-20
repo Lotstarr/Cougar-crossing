@@ -19,9 +19,9 @@ Play alone, invite your team into a private room, or join the public game.
 
 ## How to play
 
-1. Choose **Play solo**, **Create team**, or enter a room code and select **Join**. You can also stay in the public game.
+1. Enter **Your name** above the game (it is remembered on this device). Choose **Play solo**, **Create team**, or enter a room code or paste an invite link and select **Join room**. You can also stay in the public game.
 2. Open **Settings** to choose your name, difficulty, game mode, or practice bots.
-3. If playing with friends, select **Invite teammates** in your private room and share the invitation.
+3. If playing with friends, select **Copy invite** in your private room and share the invitation.
 4. The captain presses **Start game** when everyone is ready.
 5. Cross lanes, ride rafts, and keep moving forward. The pressure line keeps closing in when you pause.
 
@@ -132,3 +132,7 @@ npm run sync-physics
 ## Fan project
 
 Cougar Crossing is an unofficial fan-made game. It is not affiliated with or endorsed by Brigham Young University, BYU Athletics, or the featured opponents. Team names are used for the football theme; artwork and audio are generated in code.
+
+### Joining and player names
+
+The name field is visible in the lobby on desktop and mobile. Names update automatically, are limited to 16 characters, and follow the player through room changes and reconnects. Blank names use Cougar Fan. No account is needed. Room-code joining accepts lowercase codes, spaced codes, or a full invite link. Joining progress and errors appear beside the room controls; a failed join keeps an existing game intact. Players arriving after kickoff wait for the next round.
