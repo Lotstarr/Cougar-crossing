@@ -13,7 +13,7 @@ Play alone, invite your team into a private room, or join the public game.
 - **100-yard stages:** opponents and difficulty change as you advance. Endless mode continues increasing the pressure on later laps.
 - **One life per round:** avoid defenders, water, sidelines, blocking sleds, blitzes, and the advancing pressure line.
 - **Manual starts and restarts:** read the instructions and invite teammates before pressing **Start game**.
-- **Game-day atmosphere:** BYU uniforms, kickoff animation, stadium crowds, optional audio, touchdown celebrations, and final distance rankings.
+- **Game-day atmosphere:** BYU uniforms, kickoff animation, stadium crowds, optional audio, touchdown celebrations, and final standings.
 - **Mixed-length rafts:** slogans include “Go Cougs,” “Kiss Me Cosmo,” “Down Utes,” and “Rise & Shout.”
 - **Desktop and mobile controls:** keyboard, on-screen buttons, and field gestures.
 
@@ -34,7 +34,7 @@ Play alone, invite your team into a private room, or join the public game.
 | Settings | Change game options or manage your room |
 | Sound | Mute or enable audio |
 
-Backward movement is disabled. There are no extra lives. Eliminated players watch the remaining runners. New arrivals during a round wait for the next kickoff.
+Backward movement is disabled. There are no extra lives. Finishers become safe spectators while the remaining runners keep playing. A course round ends only after everyone has finished or been knocked out, including the last active runner. Finishers rank by completion time; non-finishers rank by distance. Final standings show every entrant. Eliminated players watch the remaining runners. New arrivals during a round wait for the next kickoff.
 
 Audio begins after your first tap or keypress. The mute setting is remembered on your device.
 

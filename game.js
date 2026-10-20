@@ -232,6 +232,8 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
       if (next <= p.simAt) next = Math.min(now, p.simAt + 0.001);
       advance(p, next, seed, startedAt);
       hit = hazard(); if (hit) return hit;
+      // Stop at the exact landing time so course finish order is authoritative.
+      if (!endless && p.score >= FINISH_ROW) break;
     }
     return null;
   }
@@ -256,7 +258,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = Game;
 
 // Compact wire format: static roster/settings travel separately from 20 Hz movement.
 // Remote positions use float32; authoritative local prediction keeps float64 precision.
-const SNAPSHOT_REASONS = ['', 'tackle', 'water', 'sideline', 'scroll wall', 'blitz', 'blocking sled', 'Joining next kickoff', 'eliminated'];
+const SNAPSHOT_REASONS = ['', 'tackle', 'water', 'sideline', 'scroll wall', 'blitz', 'blocking sled', 'Joining next kickoff', 'eliminated', 'finished'];
 function encodeSnapshot(packet, revision) {
   const p=packet.self, count=packet.players.length;
   const bytes=new Uint8Array(26+count*9+49+(p.hop?40:0)+(p.queued?14:0)),view=new DataView(bytes.buffer);let at=0;

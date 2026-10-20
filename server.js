@@ -23,7 +23,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
   let timer;
   function createRoom(code, kind) {
     const players = new Map();
-    const MAX = 40, KICKOFF_MS = 4200, ROUND_LIMIT = 15 * 60 * 1000, RECONNECT_MS = 15000;
+    const MAX = 40, KICKOFF_MS = 4200, RECONNECT_MS = 15000;
     let round, botMode = false, teamMode = true;
     let selectedDifficulty = 'easy', selectedGameMode = 'course', rules = Game;
     let wallAt = 0, entrantRecords = new Map();
@@ -45,7 +45,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       wallAt = at;
       round = { id: crypto.randomUUID(), seed: crypto.randomBytes(4).readUInt32LE(0),
         phase: players.size ? teamMode ? 'lobby' : 'kickoff' : 'waiting', minY: -4, difficulty: selectedDifficulty, gameMode: selectedGameMode,
-        winner: '', winnerId: '', finishReason: '', entrants: 0, pressureStage: 0 };
+        winner: '', winnerId: '', finishReason: '', entrants: 0, pressureStage: 0, finishers: [] };
       entrantRecords = new Map();
       let index = 0;
       for (const p of players.values()) spawn(p, index++, at);
@@ -56,7 +56,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       const startY = -(Math.floor(index / 12)) || 0;
       Object.assign(p, { pressureY: startY - 1.5, pressurePeak: startY, pressureAt: at, x: ((index * 7 + 5) % 12) + 0.5, y: startY,
         alive: p.bot || p.connected, lives: 1, score: 0, hop: null, nextStep: at, simAt: at,
-        ack: 0, queued: null, reason: '', aiAt: at + 200 + Math.random() * 400 });
+        ack: 0, queued: null, reason: '', finishedAt: null, aiAt: at + 200 + Math.random() * 400 });
       if (p.alive && !['running','over'].includes(round.phase)) entrantRecords.set(p.id,p);
     }
     function add(id, name, bot) {
@@ -75,17 +75,26 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
     function eliminate(p, reason, at) {
       p.alive = false; p.lives = 0; p.hop = null; p.queued = null; p.reason = reason; p.simAt = at;
     }
-    function finish(at, finisher = null) {
+    function compareResults(a,b) {
+      const aFinished=a.finishedAt!==null,bFinished=b.finishedAt!==null;
+      if(aFinished!==bFinished)return aFinished?-1:1;
+      return aFinished ? a.finishedAt-b.finishedAt || a.id.localeCompare(b.id)
+        : b.score-a.score || a.id.localeCompare(b.id);
+    }
+    function finish(at) {
       round.phase = 'over'; round.frozenAt = at;
-      const candidates = alive().length ? alive() : [...entrantRecords.values()];
-      candidates.sort((a,b) => b.score - a.score || a.id.localeCompare(b.id));
-      const winner = finisher || (alive().length === 1 ? alive()[0] : candidates[0]);
-      round.winner = winner?.name || ''; round.winnerId = winner?.id || '';
-      round.finishReason = rules.endless ? 'endless' : finisher ? 'course' : 'survival';
-      round.winnerYards = Math.max(0, winner?.score || 0) * Game.YARDS_PER_ROW;
-      round.standings = [...entrantRecords.values()]
-        .sort((a,b)=>b.score-a.score || Number(b.alive)-Number(a.alive) || a.id.localeCompare(b.id))
-        .map(p=>[p.id,p.name,Math.max(0,p.score),p.alive?1:0]);
+      const ranked=[...entrantRecords.values()].sort(compareResults),winner=ranked[0];
+      round.winner=winner?.name||'';round.winnerId=winner?.id||'';
+      round.finishReason=rules.endless?'endless':round.finishers.length?'course':'survival';
+      round.winnerYards=Math.max(0,winner?.score||0)*Game.YARDS_PER_ROW;
+      round.standings=ranked.map(p=>[p.id,p.name,Math.max(0,p.score),p.finishedAt!==null?1:0,
+        p.finishedAt===null?null:Math.max(0,p.finishedAt-round.startedAt)]);
+    }
+    function completeCourse(p) {
+      p.finishedAt=p.simAt;p.score=Game.FINISH_ROW;p.y=Game.FINISH_ROW;
+      p.alive=false;p.hop=null;p.queued=null;p.reason='finished';
+      round.finishers=[...entrantRecords.values()].filter(player=>player.finishedAt!==null)
+        .sort(compareResults).map(player=>[player.id,Math.max(0,player.finishedAt-round.startedAt)]);
     }
     function playerWall(p) { return Math.max(round.minY, p.pressureY); }
     function advancePressure(p, at) {
@@ -103,6 +112,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
     function simulate(p, at) {
       const hazard = rules.simulate(p, at, round.seed, round.startedAt, playerWall(p));
       if (hazard) eliminate(p, hazard, at);
+      else if (p.alive && !rules.endless && p.score >= Game.FINISH_ROW) completeCourse(p);
     }
     function think(p, at) {
       if (!p.alive || p.hop || at < p.aiAt) return;
@@ -178,9 +188,8 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
           simulate(p, at);
           if (p.bot && p.alive) think(p, at);
         }
-        const finisher = !rules.endless && alive().find(p => p.score >= Game.FINISH_ROW);
-        if (finisher) finish(at, finisher);
-        else if (!alive().length || !rules.endless && ((round.entrants > 1 && alive().length <= 1) || at - round.startedAt > ROUND_LIMIT)) finish(at);
+        // Finishers are safe spectators; the final active runner gets to complete their run.
+        if (!alive().length) finish(at);
       }
       const packet = state(at),setup=metadata(packet);
       for (const p of connectedHumans()) {
