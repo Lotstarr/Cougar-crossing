@@ -156,13 +156,18 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
     function sendState(socket,packet,p,setup,reliable=false) {
       const viewed = p.alive ? p : alive().sort((a,b)=>b.y-a.y)[0] || p;
       const local={...packet,round:{...packet.round,minY:playerWall(viewed)},self:self(p)};
-      if(socket.data.snapshotVersion!==2){if(reliable)socket.emit('state',local);else socket.volatile.emit('state',local);return;}
+      // Polling needs a small batch between HTTP requests. Volatile delivery discards
+      // every intervening tick on distant networks. Bound the queue during stalls.
+      const polling=socket.conn.transport.name==='polling';
+      const deliver=reliable||polling;
+      if(!reliable&&polling&&socket.conn.writeBuffer.length>=12)return;
+      if(socket.data.snapshotVersion!==2){if(deliver)socket.emit('state',local);else socket.volatile.emit('state',local);return;}
       if(socket.data.snapshotRoom!==code||socket.data.setupRevision!==setup.revision){
         socket.data.snapshotRoom=code;socket.data.setupRevision=setup.revision;
         socket.compress(false).emit('snapshotSetup',setup);
       }
       const encoded=Game.encodeSnapshot(local,setup.revision);
-      if(reliable)socket.compress(false).emit('snapshot',encoded);else socket.compress(false).volatile.emit('snapshot',encoded);
+      if(deliver)socket.compress(false).emit('snapshot',encoded);else socket.compress(false).volatile.emit('snapshot',encoded);
     }
     function tick() {
       const at = now(); prune(at);
