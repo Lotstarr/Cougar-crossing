@@ -20,6 +20,8 @@ button:focus-visible{outline:2px solid #88c6ff;outline-offset:3px}.lobby-control
 .name-picker{display:flex;flex-direction:column;gap:3px;min-width:120px}.name-picker label{font-size:8px;letter-spacing:.1em;color:#b4d6ff;font-weight:850}.name-picker input{width:145px;max-width:100%;background:#071e37;border:1px solid #80bdff70;border-radius:7px;color:#fff;font:inherit;font-size:13px;padding:8px 10px;min-height:40px;outline:none}.name-picker input:focus{border-color:#a8d5ff;box-shadow:0 0 0 2px #80bdff30}.rooms-bar.has-feedback .room-feedback{display:block!important}.rooms-bar.has-error .room-feedback{color:#ffd18a}.room-actions[aria-busy=true]{opacity:.65}.room-actions input:focus-visible{outline:2px solid #a8d5ff;outline-offset:2px}@media(max-width:760px){.name-picker{flex:1;min-width:120px}.name-picker input{width:100%}.room-identity{min-width:90px}.room-actions{flex-basis:100%;justify-content:flex-start;gap:5px}.room-actions form{flex:1;min-width:150px}.room-actions input{flex:1;width:95px}.room-actions .room-button{min-height:40px}.rooms-bar{gap:7px}.app.settings-open .name-picker input{display:block}}@media(max-width:420px){.room-identity{display:block;min-width:90px}.name-picker{min-width:0}.name-picker input{font-size:16px;padding:7px 9px}.room-actions form{min-width:120px}.room-actions input{min-width:55px;width:70px;font-size:16px}.room-actions .room-button{font-size:10px;padding:7px}.room-identity strong{font-size:12px}}@media(max-height:650px){.name-picker{flex-direction:row;align-items:center;gap:7px}.name-picker input{min-height:35px;max-width:180px}.rooms-bar .room-feedback{font-size:10px}}
 .room-feedback{overflow-wrap:anywhere}.dpad button:disabled{opacity:.35;cursor:default}
 .app.settings-open .stage{height:clamp(180px,45vh,480px);min-height:180px;flex:none}
+.overlay .message{pointer-events:auto}.dpad button{min-height:44px}@media(max-height:650px){.overlay.kickoff .how-to{display:none}.overlay.kickoff .message{padding:8px 12px}.message .action{margin-top:8px}.lobby-roster{margin:6px 0}}
+.lobby-roster{pointer-events:auto;text-align:left;margin:10px 0;max-height:130px;overflow:auto;border-top:1px solid #ffffff26}.lobby-roster h3{font-size:11px;margin:8px 0}.lobby-roster ul{list-style:none;margin:0;padding:0;font-size:11px}.lobby-roster li{display:flex;gap:12px;justify-content:space-between;padding:4px 0}.lobby-roster li span:last-child{color:#a9d4ff;white-space:nowrap}.lobby-roster small{font-size:10px;color:#b4cbe0}.lobby-roster[hidden],.spectator-status[hidden]{display:none}.ready-button{pointer-events:auto;margin:8px;min-height:44px}.spectator-status{position:absolute;bottom:10px;right:10px;max-width:70%;background:#06182bf0;border:1px solid #a9d4ff66;border-radius:8px;padding:7px 10px;font-size:11px;pointer-events:none}.spectator-status small{display:block;margin-top:3px;color:#b4d6ff}@media(max-height:650px){.lobby-roster{max-height:75px}.message{padding:10px 14px}.spectator-status{font-size:10px}}@media(max-width:420px){.rooms-bar input{font-size:16px!important}.spectator-status{bottom:32px;max-width:90%}.lobby-roster{max-height:95px}}
 </style>
 </head>
 <body>
@@ -29,7 +31,7 @@ button:focus-visible{outline:2px solid #88c6ff;outline-offset:3px}.lobby-control
 <section class="scoreboard" aria-label="Game scoreboard"><div class="stats"><div class="stat"><small>IN PLAY</small><strong id="alive">0 <span>/ 40</span></strong></div><div class="stat"><small>YARDS</small><strong id="score">0</strong></div><div class="stat"><small>BEST</small><strong id="best">0</strong></div><div class="stat"><small>STATUS</small><strong class="status" id="lives">IN PLAY</strong></div></div><div class="toolbar"><div class="mode-picker"><label for="game-mode">GAME MODE</label><select id="game-mode" aria-describedby="mode-status" disabled><option value="course">1,200 yd course</option><option value="endless">Endless ∞</option></select></div><div class="mode-picker"><label for="mode">DIFFICULTY</label><select id="mode" aria-describedby="mode-status" disabled><option value="easy">Easy</option><option value="normal">Normal</option><option value="hard">Hard</option></select></div><button class="action secondary" id="restart">New kickoff</button><button class="action secondary lobby-control" id="lobby">Team lobby</button><button class="action" id="fill">Fill with 39 Bots</button></div></section>
 <section class="matchup" aria-label="Opponent difficulty"><div class="matchup-team"><span class="opponent-icon" id="opponent-icon">UT</span><div><small id="stage-number">STAGE 1 / 12 · WARMUP</small><strong id="opponent-name">Utah Tech</strong></div></div><div class="matchup-progress"><span id="next-stage">Next: Colorado State · 100 yd</span><div class="progress-track"><i id="stage-progress"></i></div></div></section>
 <div class="mode-status" id="mode-status" role="status">Easy · captain selects difficulty</div>
-<main class="stage" id="stage"><canvas id="game" tabindex="0" aria-label="Football crossing game. Move forward or sideways with arrows or W A D."></canvas><div class="field-label"><span class="pill easy" id="difficulty-label">WARMUP</span><span class="pill">GRIDIRON · 12 COLUMNS</span></div><div class="overlay" id="overlay"><div class="message"><h2 id="title">Taking the field…</h2><p id="detail">Getting ready for kickoff.</p><div class="how-to" id="how-to" hidden><b>Move:</b> hold ↑ ← → or W A D, or use the buttons.<br><b>Cross:</b> dodge defenders and ride rafts across water.<br><b>Keep going:</b> stay ahead of the pressure line. One life.</div><div class="results-board" id="results-board" hidden><h3>FINAL STANDINGS</h3><ol id="results-list"></ol><div class="your-rank" id="your-rank"></div></div><button class="action" id="retry" hidden>Kick off again</button></div></div><div class="toast" id="toast" hidden></div><div class="game-broadcast" id="game-broadcast">BYU RETURN<small id="broadcast-detail">LAVELL EDWARDS STADIUM</small></div><div class="celebration" id="celebration" role="status" hidden><strong>TOUCHDOWN!</strong><span id="celebration-detail"></span></div><div class="you-note" id="note">White BYU jersey = YOU · One hop per cell</div></main>
+<main class="stage" id="stage"><canvas id="game" tabindex="0" aria-label="Football crossing game. Move forward or sideways with arrows or W A D."></canvas><div class="field-label"><span class="pill easy" id="difficulty-label">WARMUP</span><span class="pill">GRIDIRON · 12 COLUMNS</span></div><div class="overlay" id="overlay"><div class="message"><h2 id="title">Taking the field…</h2><p id="detail">Getting ready for kickoff.</p><div class="how-to" id="how-to" hidden><b>Move:</b> hold ↑ ← → or W A D, or use the buttons.<br><b>Cross:</b> dodge defenders and ride rafts across water.<br><b>Keep going:</b> stay ahead of the pressure line. One life.</div><section class="lobby-roster" id="lobby-roster" aria-label="Lobby roster" hidden><h3 id="roster-heading">TEAM ROSTER</h3><ul id="roster-list"></ul><small>Ready is a signal to your captain. The captain chooses when to start.</small></section><button class="action ready-button" id="ready" aria-pressed="false" hidden>I’m ready</button><div class="results-board" id="results-board" hidden><h3>FINAL STANDINGS</h3><ol id="results-list"></ol><div class="your-rank" id="your-rank"></div></div><button class="action" id="retry" hidden>Kick off again</button></div></div><div class="spectator-status" id="spectator-status" role="status" hidden><strong id="watching"></strong><small id="spectator-counts"></small></div><div class="toast" id="toast" hidden></div><div class="game-broadcast" id="game-broadcast">BYU RETURN<small id="broadcast-detail">LAVELL EDWARDS STADIUM</small></div><div class="celebration" id="celebration" role="status" hidden><strong>TOUCHDOWN!</strong><span id="celebration-detail"></span></div><div class="you-note" id="note">White BYU jersey = YOU · One hop per cell</div></main>
 <footer class="footer"><button class="room-button settings-toggle" id="settings-toggle" aria-expanded="false">Settings</button><div class="instructions"><b>Hold ↑ ← → or W A D.</b> <span id="obstacle-tip">Keep advancing! The pressure line follows you. Pause briefly to time crossings.</span><div class="legend" id="legend" aria-label="BYU 2026 opponents"></div><div class="footnote">Opponents from the <a href="https://byucougars.com/sports/football/schedule/season/2026" target="_blank" rel="noopener">2026 BYU schedule</a>. Fan-made game.</div></div><button class="room-button sound-control" id="sound" aria-label="Mute game audio" aria-pressed="false">Sound on</button><div class="dpad" aria-label="Movement controls"><button data-dx="-1" data-dy="0" aria-label="Move left">←</button><button data-dx="0" data-dy="1" aria-label="Move forward">↑</button><button data-dx="1" data-dy="0" aria-label="Move right">→</button></div></footer>
 </div>
 <script id="shared-physics">
@@ -357,6 +359,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   let roomAuth={roomAction:inviteCode&&inviteCode!==savedRoom?.id?'join':initialCode==='PUBLIC'?'public':'resume',roomCode:initialCode,roomKind:savedRoom?.kind||'public'};
   const auth=()=>({name:$('name').value,session,snapshotVersion:2,...roomAuth});
   const socket = io({ auth: auth(), transports:['websocket','polling'],tryAllTransports:true,timeout:7000,reconnectionDelay:500 });
+  let everJoined=false,disconnectedAt=0,rosterKey='',members=[],roster=[],localReady=false,remaining=0,watchingName='';
   let myId='', round=null, model=null, rawSelf=null, snapshots=[], pending=[], seq=0;
   let offset=0,targetOffset=0,clockReady=false,bestRtt=Infinity,ping=0,connected=false,full=false,sessionReplaced=false,lastPacket=0,jitter=0,lastStateTime=0,needsRebase=true;
   let width=0,height=0,tile=40,left=0,dpr=1,cameraY=0, cameraReady=false, lastFrame=performance.now();
@@ -431,8 +434,8 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     });
   }
   socket.on('connect',()=>{connected=true;full=false;sessionReplaced=false;bestRtt=Infinity;clockReady=false;needsRebase=true;syncClock();});
-  socket.on('disconnect',()=>{connected=false;pending=[];clearInput();});
-  socket.on('connect_error',()=>{connected=false;setRoomBusy(false);roomMessage('Connecting… The free server can take about a minute to wake up.',true);});
+  socket.on('disconnect',()=>{disconnectedAt=performance.now();connected=false;pending=[];clearInput();});
+  socket.on('connect_error',()=>{connected=false;setRoomBusy(false);roomMessage(everJoined?'Connection lost. Trying to reconnect…':'Waking the free server… This can take about a minute.',true);});
   socket.on('full',()=>{full=true;connected=false;});
   socket.on('sessionReplaced',()=>{sessionReplaced=true;clearInput();});
   setInterval(syncClock,5000);
@@ -448,7 +451,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     if(roomContext.kind==='private')$('room-code').value=roomContext.code;
     text('room-label',roomContext.label);$('solo-room').disabled=roomContext.kind==='solo';$('copy-room').hidden=roomContext.kind!=='private';$('public-room').hidden=roomContext.kind==='public';
     text('room-feedback',roomContext.kind==='solo'?'Your own game. You control difficulty, bots, and kickoff.':roomContext.kind==='private'?`Share code ${roomContext.code} or copy the invite link. The captain starts kickoff.`:'Play with everyone, go solo, or create a private room for your team.');
-    myId=data.id;if(nameDirty)saveName();seq=data.ack||0;pending=[];needsRebase=true;session=data.session||'';socket.auth=auth();try{sessionStorage.setItem('cougarSession',session);}catch{};});
+    everJoined=true;myId=data.id;if(nameDirty)saveName();seq=data.ack||0;pending=[];needsRebase=true;session=data.session||'';socket.auth=auth();try{sessionStorage.setItem('cougarSession',session);}catch{};});
   socket.on('notice',showToast);
   function roomMessage(message,visible=false){
     text('room-feedback',message);const bar=document.querySelector('.rooms-bar');bar.classList.toggle('has-feedback',visible);bar.classList.toggle('has-error',visible&&!roomBusy);
@@ -468,11 +471,11 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
       if(typeof accepted==='string'&&cleanPlayerName($('name').value)===value){playerName=accepted;nameDirty=false;}
     });
   }
-  socket.on('roomError',data=>{clearTimeout(roomTimer);setRoomBusy(false);const message=data?.message||'Unable to join that room.';roomFailure=message;roomMessage(message,true);if(!roomContext)$('public-room').hidden=false;showToast(message);});
+  socket.on('roomError',data=>{clearTimeout(roomTimer);setRoomBusy(false);const message=data?.message||'Unable to join that room.';roomFailure=message;roomMessage(message,true);if(!round){$('public-room').hidden=false;socket.io.reconnection(false);}showToast(message);});
   function switchRoom(action,code=''){
     if(roomBusy)return;
     if(action==='join'&&code===roomContext?.code){roomFailure='';roomMessage('You’re already in this room.');showToast('You’re already in this room.');return;}
-    saveName(true);setRoomBusy(true);roomFailure='';clearTimeout(roomTimer);clearInput();
+    socket.io.reconnection(true);saveName(true);setRoomBusy(true);roomFailure='';clearTimeout(roomTimer);clearInput();
     roomMessage(action==='join'?`Joining room ${code}…`:'Opening your game…',true);
     if(socket.connected)socket.emit('room',{action,code,name:playerName});
     else{socket.disconnect();roomAuth={roomAction:action,roomCode:code,roomKind:action==='solo'?'solo':action==='public'?'public':'private'};socket.auth=auth();socket.connect();}
@@ -507,6 +510,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     if(!clockReady){offset=targetOffset=state.t-clientNow();lastServerNow=clientNow()+offset;}
     const changed=!round||round.id!==state.round.id;
     if(changed){celebrationUntil=0;confetti=[];lastHopAt=null;landingAt=-Infinity;lastResultsKey='';$('celebration').hidden=true;shownStage=-1;snapshots=[];pending=[];seq=state.self.ack||0;clearInput();nextSend=0;cameraReady=false;localView=null;renderError={x:0,y:0};hopLift=0;}
+    members=state.members||[];roster=state.players;remaining=state.alive;localReady=!!members.find(row=>row[0]===myId)?.[3];
     round=state.round;document.querySelector('.app').classList.toggle('playing',['kickoff','running'].includes(round.phase)&&state.self.alive);
     const rulesKey=`${round.difficulty||'easy'}:${round.gameMode||'course'}`;
     if(rulesMode!==rulesKey){rulesMode=rulesKey;rules=Game.withDifficulty(round.difficulty||'easy',round.gameMode||'course');shownStage=-1;}
@@ -568,11 +572,12 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   const restart=()=>{
     saveName(true);
     const needsReconnect=!connected||full||sessionReplaced||!lastPacket||performance.now()-lastPacket>=3000;
-    if(needsReconnect){clearInput();socket.disconnect();socket.auth=auth();socket.connect();}
+    if(needsReconnect){socket.io.reconnection(true);clearInput();socket.disconnect();socket.auth=auth();socket.connect();}
     else{socket.emit('restart');setSettings(false);}
     canvas.focus({preventScroll:true});
   };
   $('lobby').addEventListener('click',()=>{socket.emit('lobby');canvas.focus({preventScroll:true});});
+  $('ready').addEventListener('click',()=>{saveName(true);socket.emit('ready',!localReady);});
   $('restart').addEventListener('click',restart);$('retry').addEventListener('click',restart);
   $('name').addEventListener('input',()=>{nameDirty=true;rememberName($('name').value);clearTimeout(nameTimer);nameTimer=setTimeout(()=>saveName(),300);});
   $('name').addEventListener('blur',()=>saveName(true));
@@ -589,7 +594,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   let swipe=null;
   const clearInput=()=>{keys.clear();pointers.clear();pointerDir=null;buffered=null;swipe=null;document.querySelectorAll('.pressed').forEach(b=>b.classList.remove('pressed'));};
   document.addEventListener('focusin',e=>{if(e.target instanceof HTMLInputElement||e.target instanceof HTMLSelectElement||e.target instanceof HTMLTextAreaElement||e.target.isContentEditable)clearInput();});
-  window.addEventListener('blur',clearInput);document.addEventListener('visibilitychange',()=>{if(document.hidden)clearInput();});
+  window.addEventListener('blur',clearInput);document.addEventListener('visibilitychange',()=>{clearInput();if(!document.hidden){needsRebase=true;syncClock();if(!socket.connected&&!roomFailure&&!sessionReplaced&&!full)socket.connect();}});
   for(const button of document.querySelectorAll('.dpad button')){
     const direction=[Number(button.dataset.dx),Number(button.dataset.dy)];
     let handledPointer=false;
@@ -905,9 +910,9 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     const fresh=connected&&lastPacket&&performance.now()-lastPacket<3000;
     if(full){title='THE FIELD IS FULL';detail='40 players are on the field. Try joining again when a place opens.';retry=true;retryLabel='Try joining again';}
     else if(sessionReplaced){title='GAME OPEN IN ANOTHER TAB';detail='Your runner is active there. Reconnect here to move this session back.';retry=true;retryLabel='Play in this tab';}
-    else if(roomFailure&&!round){title='CHOOSE A GAME';detail=roomFailure;}
-    else if(!fresh){title=lastPacket?'RECONNECTING…':'CONNECTING…';detail=lastPacket?'Your place and one-life run are held for 15 seconds.':'Connecting to the game. The free server can take about a minute to wake up.';retry=true;retryLabel='Reconnect';}
-    else if(round?.phase==='lobby'){title=roomContext?.kind==='solo'?'READY TO RUN?':'READY FOR KICKOFF?';detail=roomContext?.kind==='solo'?'Your own game. Choose Settings for difficulty, Endless mode, or practice bots.':`${matchHumans} ${matchHumans===1?'player':'players'} ready. ${isCaptain?'Invite teammates or start when you’re ready.':'Waiting for your captain to start.'}`;retry=isCaptain;retryLabel='Start game';}
+    else if(roomFailure&&!round){title=/closed|expired/.test(roomFailure)?'ROOM CLOSED':'CHOOSE A GAME';detail=roomFailure;}
+    else if(!fresh){title=everJoined?'RECONNECTING…':'WAKING THE SERVER…';detail=everJoined?(disconnectedAt&&performance.now()-disconnectedAt>15000?'Your reconnect window has ended. Rejoining may put you on the sideline until the next kickoff.':'Your place and one-life run are held for 15 seconds. Live play continues while disconnected.'):'The free server can take about a minute to wake up. You’ll join automatically when it’s ready.';retry=true;retryLabel='Reconnect';}
+    else if(round?.phase==='lobby'){title=roomContext?.kind==='solo'?'READY TO RUN?':'READY FOR KICKOFF?';detail=roomContext?.kind==='solo'?'Your own game. Choose Settings for difficulty, Endless mode, or practice bots.':`${matchHumans} ${matchHumans===1?'player':'players'} connected. ${isCaptain?'Invite teammates or start when you’re ready.':'Waiting for your captain to start.'}`;retry=isCaptain;retryLabel='Start game';}
     else if(round?.phase==='kickoff'){
       const k=round.kickoff,opponent=TEAMS[k.team];
       if(at<k.kickAt){title='OPENING KICKOFF';detail=`${opponent.name} is kicking to the BYU end zone. Get ready!`;}
@@ -926,12 +931,31 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
       detail=model.reason==='Joining next kickoff'?'You’re in! This round is underway. You’ll play at the next kickoff.':`Out: ${model.reason||'tackle'}. Watching the leader.${matchHumans===1?' Start a new kickoff to try again.':''}`;
       retry=matchHumans===1&&isCaptain;
     }
+    const inLobby=fresh&&round?.phase==='lobby';
+    $('lobby-roster').hidden=!inLobby||roomContext?.kind==='solo';
+    $('ready').hidden=!inLobby||isCaptain||roomContext?.kind==='solo';
+    text('ready',localReady?'Ready ✓ · Undo':'I’m ready');$('ready').setAttribute('aria-pressed',String(localReady));
+    if(inLobby){
+      const key=JSON.stringify([members,roster.map(p=>[p[0],p[5]]),isCaptain]);
+      if(key!==rosterKey){rosterKey=key;const list=$('roster-list');list.replaceChildren();let readyCount=0,humanCount=0,bots=0;
+        for(const member of members){if(member[1]){bots++;continue;}humanCount++;if(member[2]&&member[3])readyCount++;
+          const item=document.createElement('li'),name=document.createElement('span'),status=document.createElement('span');
+          name.textContent=(roster.find(p=>p[0]===member[0])?.[5]||'Cougar Fan')+(member[0]===myId?' (you)':'');
+          status.textContent=!member[2]?'Reconnecting':member[0]===(snapshotSetup?.hostId||members.find(m=>!m[1]&&m[2])?.[0])?'Captain':member[3]?'Ready ✓':'Getting ready';item.append(name,status);list.append(item);
+        }
+        if(bots){const item=document.createElement('li');item.textContent=`${bots} practice bots · ready`;list.append(item);}
+        text('roster-heading',`TEAM ROSTER · ${readyCount} / ${humanCount} READY`);
+      }
+    }
+    const spectating=fresh&&round?.phase==='running'&&model&&!model.alive;
+    $('spectator-status').hidden=!spectating;
+    if(spectating){text('watching',watchingName?`Watching ${watchingName}`:'Waiting for the field…');text('spectator-counts',`${remaining} still running · ${(round.finishers||[]).length} finished`);}
     $('how-to').hidden=!fresh||round?.phase!=='lobby';
     $('retry').hidden=!retry;text('retry',retryLabel);
     const compact=fresh&&['kickoff','lobby'].includes(round?.phase)||fresh&&model&&!model.alive&&round?.phase==='running';
     $('overlay').classList.toggle('kickoff',!!compact);$('overlay').hidden=!title;text('title',title);text('detail',detail);
     const lagging=fresh&&(ping>350||performance.now()-lastPacket>600);
-    text('connection',fresh?`${lagging?'NETWORK DELAY':'LIVE'} · ${ping} ms`:sessionReplaced?'Session moved':full?'Field full':roomFailure&&!round?'Choose game':'Reconnecting…');$('dot').style.background=fresh&&!lagging?'#66d7a3':'#ffcc78';
+    text('connection',fresh?`${lagging?'NETWORK DELAY':'LIVE'} · ${ping} ms`:sessionReplaced?'Session moved':full?'Field full':roomFailure&&!round?'Choose game':everJoined?'Reconnecting…':'Waking server…');$('dot').style.background=fresh&&!lagging?'#66d7a3':'#ffcc78';
     if(performance.now()>toastUntil)$('toast').hidden=true;
   }
   function draw(frame){
@@ -945,6 +969,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
         const predictionAt=Math.min(at,rawSelf.simAt+Math.max(250,ping+150));rules.simulate(model,predictionAt,round.seed,round.startedAt);input(at);
       }
       const remote=samplePlayers(at-Game.interpolationDelay(ping,jitter));const leader=remote.filter(p=>p[3]).sort((a,b)=>b[2]-a[2])[0];
+      watchingName=leader?.[5]||'';
       const target=model.alive?model:leader?{x:leader[1],y:leader[2]}:model;
       const desired=['lobby','kickoff'].includes(round.phase)?Math.min(-1,target.y):Math.max(-3,target.y);if(!cameraReady||Math.abs(desired-cameraY)>8){cameraY=desired;cameraReady=true;}else cameraY+=(desired-cameraY)*(1-Math.exp(-7*dt));
       ctx.save();ctx.beginPath();ctx.rect(left,0,tile*12,height);ctx.clip();
