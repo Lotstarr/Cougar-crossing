@@ -1,6 +1,7 @@
 'use strict';
 // This module is also embedded verbatim into index.html for identical prediction.
 function createGameRules(mode = 'easy', gameMode = 'course') {
+  const MAX_PLAYERS = 40;
   const endless = gameMode === 'endless';
   const MODES = Object.freeze({
     easy: Object.freeze({label:'Easy', speed:1, spacing:1, raft:1, gap:1, rest:0, wallDelay:5000, wallSpeed:.45}),
@@ -251,7 +252,7 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
   }
   function interpolationDelay(rtt, jitter = 0) { return clamp(70 + rtt / 2 + jitter * 2, 90, 260); }
 
-  return { MODES, profile, endless, withDifficulty: createGameRules, WIDTH, HOP_MS, STEP_MS, RADIUS, STAGE_YARDS, YARDS_PER_ROW, ROWS_PER_STAGE, OPPONENTS, FINISH_ROW, stageFor, difficulty, sledsFor, blocked, blitzes, mod, clamp, hash32, random, yardNumber, lane, obstacles, rafts, danger, beginHop, advance, simulate, predict, interpolationDelay, copy };
+  return { MAX_PLAYERS, MODES, profile, endless, withDifficulty: createGameRules, WIDTH, HOP_MS, STEP_MS, RADIUS, STAGE_YARDS, YARDS_PER_ROW, ROWS_PER_STAGE, OPPONENTS, FINISH_ROW, stageFor, difficulty, sledsFor, blocked, blitzes, mod, clamp, hash32, random, yardNumber, lane, obstacles, rafts, danger, beginHop, advance, simulate, predict, interpolationDelay, copy };
 }
 const Game = createGameRules();
 if (typeof module !== 'undefined' && module.exports) module.exports = Game;
@@ -261,6 +262,7 @@ if (typeof module !== 'undefined' && module.exports) module.exports = Game;
 const SNAPSHOT_REASONS = ['', 'tackle', 'water', 'sideline', 'scroll wall', 'blitz', 'blocking sled', 'Joining next kickoff', 'eliminated', 'finished'];
 function encodeSnapshot(packet, revision) {
   const p=packet.self, count=packet.players.length;
+  if(count>Game.MAX_PLAYERS)throw new Error('Too many snapshot players');
   const bytes=new Uint8Array(26+count*9+49+(p.hop?40:0)+(p.queued?14:0)),view=new DataView(bytes.buffer);let at=0;
   const u8=value=>{view.setUint8(at,value);at++;},i8=value=>{view.setInt8(at,value);at++;},u32=value=>{view.setUint32(at,value);at+=4;};
   const f32=value=>{view.setFloat32(at,value);at+=4;},f64=value=>{view.setFloat64(at,value);at+=8;};
@@ -279,7 +281,7 @@ function decodeSnapshot(data,setup) {
   if(view.byteLength<26||u8()!==2)throw new Error('Unsupported snapshot');
   const revision=u32();if(!setup||revision!==setup.revision)return null;
   const t=f64(),minY=f64(),pressureStage=u32(),count=u8();
-  if(count!==setup.roster.length||count>40||view.byteLength<26+count*9+49)throw new Error('Invalid snapshot roster');
+  if(count!==setup.roster.length||count>Game.MAX_PLAYERS||view.byteLength<26+count*9+49)throw new Error('Invalid snapshot roster');
   const players=setup.roster.map(row=>[row[0],f32(),f32(),u8(),row[1],row[2]]);
   const self={x:f64(),y:f64(),alive:!!u8(),lives:u8(),score:f64(),nextStep:f64(),simAt:f64(),ack:u32(),reason:SNAPSHOT_REASONS[u8()]??'eliminated',hop:null,queued:null};
   if(u8())self.hop={x:f64(),y:f64(),tx:f64(),ty:f64(),at:f64()};

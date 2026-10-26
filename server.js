@@ -24,11 +24,12 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
   const cleanName=value=>typeof value==='string'?value.normalize('NFKC').replace(/[^\p{L}\p{M}\p{N} _.'’\-]/gu,'').replace(/\s+/g,' ').trim().slice(0,16)||'Cougar Fan':'Cougar Fan';
   function createRoom(code, kind) {
     const players = new Map();
-    const MAX = 40, KICKOFF_MS = 4200, RECONNECT_MS = 15000;
+    const MAX = Game.MAX_PLAYERS, START_WALL = -Math.ceil(Game.MAX_PLAYERS / Game.WIDTH) - 1, KICKOFF_MS = 4200, RECONNECT_MS = 15000;
     let round, botMode = false, teamMode = true;
     let selectedDifficulty = 'easy', selectedGameMode = 'course', rules = Game;
     let wallAt = 0, entrantRecords = new Map();
     let setupSignature = '', setupRevision = 0, latestSetup;
+    let leaderboardAt=-Infinity, leaderboardPhase='', leaderboardSignature='';
     const humans = () => [...players.values()].filter(p => !p.bot);
     const connectedHumans = () => humans().filter(p => p.connected);
     const hostId = () => connectedHumans()[0]?.id || '';
@@ -45,7 +46,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       const at = now(); rules = Game.withDifficulty(selectedDifficulty, selectedGameMode);
       wallAt = at;
       round = { id: crypto.randomUUID(), seed: crypto.randomBytes(4).readUInt32LE(0),
-        phase: players.size ? teamMode ? 'lobby' : 'kickoff' : 'waiting', minY: -4, difficulty: selectedDifficulty, gameMode: selectedGameMode,
+        phase: players.size ? teamMode ? 'lobby' : 'kickoff' : 'waiting', minY: START_WALL, difficulty: selectedDifficulty, gameMode: selectedGameMode,
         winner: '', winnerId: '', finishReason: '', entrants: 0, pressureStage: 0, finishers: [] };
       entrantRecords = new Map();
       let index = 0;
@@ -87,14 +88,21 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       return aFinished ? a.finishedAt-b.finishedAt || a.id.localeCompare(b.id)
         : b.score-a.score || a.id.localeCompare(b.id);
     }
+    function standings() {
+      const entries=['lobby','kickoff','waiting'].includes(round.phase)?[...players.values()]:[...entrantRecords.values()];
+      return entries.sort(compareResults).map(p=>[p.id,p.name,Math.max(0,p.score),p.finishedAt!==null?1:0,
+        p.finishedAt===null?null:Math.max(0,p.finishedAt-round.startedAt),
+        p.finishedAt!==null?'finished':!p.alive?'out':!p.bot&&!p.connected?'reconnecting':'running']);
+    }
+    function leaderboard(at) {return {roomId:code,roundId:round.id,phase:round.phase,t:at,rows:round.phase==='over'?round.standings:standings()};}
+    function depart(p) {if(p.alive&&round.phase==='running')eliminate(p,'eliminated',now());}
     function finish(at) {
       round.phase = 'over'; round.frozenAt = at;
       const ranked=[...entrantRecords.values()].sort(compareResults),winner=ranked[0];
       round.winner=winner?.name||'';round.winnerId=winner?.id||'';
       round.finishReason=rules.endless?'endless':round.finishers.length?'course':'survival';
       round.winnerYards=Math.max(0,winner?.score||0)*Game.YARDS_PER_ROW;
-      round.standings=ranked.map(p=>[p.id,p.name,Math.max(0,p.score),p.finishedAt!==null?1:0,
-        p.finishedAt===null?null:Math.max(0,p.finishedAt-round.startedAt)]);
+      round.standings=standings();
     }
     function completeCourse(p) {
       p.finishedAt=p.simAt;p.score=Game.FINISH_ROW;p.y=Game.FINISH_ROW;
@@ -133,7 +141,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       if (candidates.length) rules.beginHop(p, ...candidates[0], at, round.seed);
     }
     function prune(at) {
-      for (const [id,p] of players) if (!p.bot && !p.connected && at - p.disconnectedAt >= RECONNECT_MS) players.delete(id);
+      for (const [id,p] of players) if (!p.bot && !p.connected && at - p.disconnectedAt >= RECONNECT_MS) {depart(p);players.delete(id);}
     }
     function state(at) {
       return { t: at, round: { ...round }, count: players.size, alive: alive().length, botMode, teamMode,
@@ -192,7 +200,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
           round.pressureStage = Math.max(round.pressureStage, leaderStage);
           wallAt = at;
         } else {
-          round.minY = -4 + Math.max(0, at - round.startedAt - rules.profile.wallDelay) / 1000 * rules.profile.wallSpeed;
+          round.minY = START_WALL + Math.max(0, at - round.startedAt - rules.profile.wallDelay) / 1000 * rules.profile.wallSpeed;
         }
         for (const p of players.values()) {
           if (!p.alive) continue;
@@ -208,6 +216,11 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
         const socket = io.sockets.sockets.get(p.socketId);
         if (socket) sendState(socket,packet,p,setup);
       }
+      if(at-leaderboardAt>=1000||leaderboardPhase!==round.phase){
+        leaderboardAt=at;leaderboardPhase=round.phase;
+        const board=leaderboard(at),signature=JSON.stringify([board.roundId,board.phase,board.rows]);
+        if(signature!==leaderboardSignature){leaderboardSignature=signature;io.to(code).emit('leaderboard',board);}
+      }
     }
     reset();
     function accept(socket) {
@@ -219,7 +232,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       if (!p) {
         if (players.size >= MAX) {
           const bot = [...players.values()].find(player => player.bot);
-          if (bot) players.delete(bot.id);
+          if (bot) {depart(bot);players.delete(bot.id);}
           else { socket.emit('full'); return; }
         }
         const first = humans().length === 0;
@@ -236,7 +249,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       if(resumed&&typeof socket.handshake.auth?.name==='string')rename(p,socket.handshake.auth.name);
       socket.data.playerId = p.id; socket.data.roomCode = code; socket.join(code);
       socket.compress(false).emit('init', { id: p.id, name: p.name, session: p.session, resumed, ack: p.ack, maxPlayers: MAX, room: info() });
-      const packet=state(at);sendState(socket,packet,p,metadata(packet),true);
+      const packet=state(at);sendState(socket,packet,p,metadata(packet),true);socket.emit('leaderboard',leaderboard(at));
       socket.on('move', input => {
         if (round.phase !== 'running' || !p.alive || !input || typeof input !== 'object') return;
         if (input.roundId !== undefined && input.roundId !== round.id) return;
@@ -275,17 +288,17 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
         if (connectedHumans().length === 1 || !['kickoff','running'].includes(round.phase)) { fill(); reset(); }
         else socket.emit('notice','Bots will fill the field at the next kickoff.');
       }));
-      socket.on('restart', () => captainAction(() => {
+      socket.on('restart', options => captainAction(() => {
         if (connectedHumans().length > 1 && round.phase !== 'over' && round.phase !== 'lobby') return;
         if (round.phase === 'lobby') { round.phase = 'kickoff'; round.entrants = alive().length; scheduleKickoff(now()); }
-        else reset();
+        else {reset();if(options?.start===true){round.phase='kickoff';round.entrants=alive().length;scheduleKickoff(now());}}
       }));
       socket.on('lobby', () => captainAction(() => {
         if (connectedHumans().length > 1 && ['kickoff','running'].includes(round.phase)) return;
         teamMode = !teamMode; reset();
       }));
       socket.on('leave', (_data, reply) => {
-        players.delete(p.id); if (typeof reply === 'function') reply(true); socket.disconnect(true);
+        depart(p);players.delete(p.id); if (typeof reply === 'function') reply(true); socket.disconnect(true);
       });
       socket.on('disconnect', () => {
         if (players.has(p.id) && p.socketId === socket.id) { p.ready = false; p.connected = false; p.disconnectedAt = now(); p.queued = null; }
@@ -295,7 +308,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
     function info() { return { code: kind === 'solo' ? '' : code, id: code, kind, label: kind === 'solo' ? 'Solo game' : kind === 'private' ? `Room ${code}` : 'Public game' }; }
     function remove(socket) {
       const p = players.get(socket.data.playerId);
-      if (p && p.socketId === socket.id) players.delete(p.id);
+      if (p && p.socketId === socket.id) {depart(p);players.delete(p.id);}
       socket.leave(code);
       for (const name of ['move','name','ready','difficulty','gameMode','fillBots','restart','lobby','leave','disconnect']) socket.removeAllListeners(name);
       if (!humans().length && code !== 'PUBLIC') { players.clear(); rooms.delete(code); }
@@ -345,7 +358,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
     if (current === destination) return fail('You are already in this room.');
     const session = socket.handshake.auth?.session;
     const resume = [...destination.players.values()].find(p => !p.bot && p.session === session);
-    if (!resume && destination.players.size >= 40 && ![...destination.players.values()].some(p => p.bot)) {
+    if (!resume && destination.players.size >= Game.MAX_PLAYERS && ![...destination.players.values()].some(p => p.bot)) {
       if (initial) socket.emit('full');
       return fail('That room is full. Try Solo or create your own room.');
     }

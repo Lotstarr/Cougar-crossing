@@ -12,18 +12,20 @@ Play alone, invite your team into a private room, or join the public game.
 - **Three difficulty settings:** Easy, Normal, and Hard.
 - **100-yard stages:** opponents and difficulty change as you advance. Endless mode continues increasing the pressure on later laps.
 - **One life per round:** avoid defenders, water, sidelines, blocking sleds, blitzes, and the advancing pressure line.
-- **Manual starts and restarts:** read the instructions and invite teammates before pressing **Start game**.
+- **Manual starts and restarts:** read the instructions and invite teammates before pressing **Play**.
+- **Find yourself:** a small course map marks your position with a white YOU marker alongside other runners.
+- **Full room leaderboard:** see every entrant after elimination or finishing; standings update while the round continues and become final when the last runner is done.
 - **Game-day atmosphere:** BYU uniforms, kickoff animation, stadium crowds, optional audio, touchdown celebrations, and final standings.
 - **Mixed-length rafts:** slogans include “Go Cougs,” “Kiss Me Cosmo,” “Down Utes,” and “Rise & Shout.”
 - **Desktop and mobile controls:** keyboard, on-screen buttons, and field gestures. Mobile rounds tuck away the header and room controls to maximize the playfield.
 
 ## How to play
 
-1. Enter **Your name** above the game (it is remembered on this device). Choose **Play solo**, **Host game**, or enter a room code or paste an invite link and tap **Join**. You can also stay in the public game.
+1. Enter **Your name** above the game (it is remembered on this device). Choose **Solo**, **Host**, or enter a room code or paste an invite link and tap **Join**. You can also stay in the public game.
    New team codes are four digits. Tap the large room code to copy it, or use **Copy invite link** so teammates can open the room directly.
 2. Open **Settings** to choose difficulty, game mode, or practice bots.
 3. If playing with friends, select **Copy invite link** in your private room and share the invitation.
-4. Teammates can press **I’m ready**. The roster shows names, captain, readiness, and reconnecting players. Readiness is advisory; the captain presses **Start game** when the team is ready.
+4. The host presses **Play**. Extra room options and the roster are available in Settings.
 5. Cross lanes, ride rafts, and keep moving forward. The pressure line keeps closing in when you pause.
 
 | Control | Action |
@@ -35,7 +37,7 @@ Play alone, invite your team into a private room, or join the public game.
 | Settings | Change game options or manage your room |
 | Sound | Mute or enable audio |
 
-Backward movement is disabled. There are no extra lives. Finishers become safe spectators while the remaining runners keep playing. A course round ends only after everyone has finished or been knocked out, including the last active runner. Finishers rank by completion time; non-finishers rank by distance. Final standings show every entrant. Eliminated players watch the leading remaining runner; a spectator panel shows their name, remaining runners, and finished count. New arrivals during a round wait for the next kickoff.
+Backward movement is disabled. There are no extra lives. Finishers become safe spectators while the remaining runners keep playing. A course round ends only after everyone has finished or been knocked out, including the last active runner. Finishers rank by completion time; non-finishers rank by distance. Final standings show every entrant. After elimination or finishing, the full live leaderboard is available immediately, with your row highlighted and your place pinned above the list. Use Spectate to return to spectating and the course map. Eliminated players watch the leading remaining runner; a spectator panel shows their name, remaining runners, and finished count. New arrivals during a round wait for the next kickoff.
 
 Audio begins after your first tap or keypress. The mute setting is remembered on your device.
 
@@ -140,7 +142,7 @@ The name field is visible in the lobby on desktop and mobile. Names update autom
 
 ### Settings and reconnect behavior
 
-Opening Settings clears movement input and disables the on-screen arrows; live multiplayer play and pressure continue. A reconnect action reconnects the existing session instead of starting another round. Each tab remembers its own player name, while the last chosen name remains the default for new tabs. Renaming on the results screen updates both the standings and the winner announcement.
+Opening Settings clears movement input and disables the on-screen arrows; live multiplayer play and pressure continue. A reconnect action reconnects the existing session instead of starting another round. The default screen shows only the field, alive count, yards, opponent, movement arrows, and a Settings icon. Solo starts with one click; the host can start the next round with Play again. Extra controls and instructions remain in Settings. Each tab remembers its own player name, while the last chosen name remains the default for new tabs. Renaming on the results screen updates both the standings and the winner announcement.
 
 ## Latest multiplayer checks
 
