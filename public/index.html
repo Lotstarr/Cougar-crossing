@@ -469,6 +469,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   socket.on('sessionReplaced',()=>{sessionReplaced=true;clearInput();});
   setInterval(syncClock,5000);
   socket.on('init',data=>{
+    const switching=roomBusy;
     clearTimeout(roomTimer);snapshotSetup=null;latestLeaderboard=null;roomBusy=false;roomFailure='';full=false;sessionReplaced=false;connected=true;round=null;model=null;rawSelf=null;snapshots=[];pending=[];lastPacket=0;clearInput();
     setSettings(false);
     roomContext=data.room||{id:'PUBLIC',code:'PUBLIC',kind:'public',label:'Public game'};
@@ -477,7 +478,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     const url=new URL(location.href);if(roomContext.kind==='private')url.searchParams.set('room',roomContext.code);else url.searchParams.delete('room');history.replaceState(null,'',url);
     if(!nameDirty&&data.name){playerName=data.name;if(data.name!=='Cougar Fan'||$('name').value)$('name').value=data.name;try{sessionStorage.setItem('cougarPlayerName',$('name').value);}catch{}}
     setRoomBusy(false);document.querySelector('.rooms-bar').classList.remove('has-feedback','has-error');
-    $('room-code').value='';
+    if(switching||roomContext.kind==='private'&&roomCode($('room-code').value)===roomContext.code)$('room-code').value='';
     document.querySelector('.app').classList.toggle('private-game',roomContext.kind!=='public');
     $('copy-code').hidden=roomContext.kind!=='private';text('copy-code',roomContext.code||'');
     $('copy-code').setAttribute('aria-label',`Copy room code ${roomContext.code||''}`);
