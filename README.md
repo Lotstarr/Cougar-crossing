@@ -11,6 +11,7 @@ Play alone, invite your team into a private room, or join the public game.
 - **Two game modes:** a 1,200-yard course or an endless return.
 - **Three difficulty settings:** Easy, Normal, and Hard.
 - **100-yard stages:** opponents and difficulty change as you advance. Endless mode continues increasing the pressure on later laps.
+- **Opponent order:** Utah Tech → Arizona → Colorado State → TCU → Iowa State → Notre Dame → UCF → Arizona State → Utah → Baylor → Kansas → Cincinnati.
 - **One life per round:** avoid defenders, water, sidelines, blocking sleds, blitzes, and the advancing pressure line.
 - **Manual starts and restarts:** read the instructions and invite teammates before pressing **Play**.
 - **Find yourself:** a small course map marks your position with a white YOU marker alongside other runners.

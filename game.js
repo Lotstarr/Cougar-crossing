@@ -11,20 +11,20 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
   const profile = Object.prototype.hasOwnProperty.call(MODES, mode) ? MODES[mode] : MODES.easy;
   const WIDTH = 12, HOP_MS = 160, STEP_MS = 190, RADIUS = 0.24;
   const STAGE_YARDS = 100, YARDS_PER_ROW = 5, ROWS_PER_STAGE = STAGE_YARDS / YARDS_PER_ROW;
-  // A custom game progression, not a real-world ranking of the teams.
+  // Opponent schedule order supplied by the host; difficulty increases by stage.
   const OPPONENTS = [
     {name:'Utah Tech', short:'UT', color:'#ba1c35', accent:'#083454'},
-    {name:'Colorado State', short:'CSU', color:'#27634b', accent:'#d8c391'},
-    {name:'Kansas', short:'KU', color:'#165fbe', accent:'#ee3c48'},
-    {name:'Cincinnati', short:'CIN', color:'#b8223b', accent:'#1d2530'},
-    {name:'UCF', short:'UCF', color:'#252a30', accent:'#d8bf80'},
     {name:'Arizona', short:'AZ', color:'#ab0520', accent:'#123255'},
-    {name:'Baylor', short:'BU', color:'#175b41', accent:'#f5c946'},
-    {name:'Iowa State', short:'ISU', color:'#a71930', accent:'#ffd34d'},
+    {name:'Colorado State', short:'CSU', color:'#27634b', accent:'#d8c391'},
     {name:'TCU', short:'TCU', color:'#633895', accent:'#e4d6ff'},
+    {name:'Iowa State', short:'ISU', color:'#a71930', accent:'#ffd34d'},
+    {name:'Notre Dame', short:'ND', color:'#c7a75d', accent:'#112852'},
+    {name:'UCF', short:'UCF', color:'#252a30', accent:'#d8bf80'},
     {name:'Arizona State', short:'ASU', color:'#8c1d40', accent:'#ffc627'},
     {name:'Utah', short:'UTAH', color:'#cc1234', accent:'#fff'},
-    {name:'Notre Dame', short:'ND', color:'#c7a75d', accent:'#112852'}
+    {name:'Baylor', short:'BU', color:'#175b41', accent:'#f5c946'},
+    {name:'Kansas', short:'KU', color:'#165fbe', accent:'#ee3c48'},
+    {name:'Cincinnati', short:'CIN', color:'#b8223b', accent:'#1d2530'}
   ];
   const laneCache = new Map(), sledCache = new Map(), blitzCache = new Map();
   function memo(cache, key, create) {
