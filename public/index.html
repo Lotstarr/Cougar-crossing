@@ -1041,7 +1041,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
       if(round.phase==='running'&&model.alive&&model.y-round.minY<1.8){
         ctx.save();ctx.fillStyle='#ffcc78';ctx.textAlign='center';ctx.font=`900 ${Math.max(13,Math.min(19,tile*.42))}px system-ui`;
         ctx.shadowColor='#071b32';ctx.shadowBlur=5;
-        ctx.fillText('KEEP MOVING! PRESSURE BEHIND YOU',left+6*tile,Math.max(26,Math.min(height-20,wall-14)));ctx.restore();
+        ctx.fillText('KEEP MOVING!',left+6*tile,Math.max(26,Math.min(height-20,wall-14)));ctx.restore();
       }
       if(round.phase==='running')drawBlitzes(seconds,low,high);
       // Other players draw first; the local white helmet always stays on top.
