@@ -22,12 +22,28 @@ button:focus-visible{outline:2px solid #88c6ff;outline-offset:3px}.lobby-control
 .app.settings-open .stage{height:clamp(180px,45vh,480px);min-height:180px;flex:none}
 .overlay .message{pointer-events:auto}.dpad button{min-height:44px}@media(max-height:650px){.overlay.kickoff .how-to{display:none}.overlay.kickoff .message{padding:8px 12px}.message .action{margin-top:8px}.lobby-roster{margin:6px 0}}
 .lobby-roster{pointer-events:auto;text-align:left;margin:10px 0;max-height:130px;overflow:auto;border-top:1px solid #ffffff26}.lobby-roster h3{font-size:11px;margin:8px 0}.lobby-roster ul{list-style:none;margin:0;padding:0;font-size:11px}.lobby-roster li{display:flex;gap:12px;justify-content:space-between;padding:4px 0}.lobby-roster li span:last-child{color:#a9d4ff;white-space:nowrap}.lobby-roster small{font-size:10px;color:#b4cbe0}.lobby-roster[hidden],.spectator-status[hidden]{display:none}.ready-button{pointer-events:auto;margin:8px;min-height:44px}.spectator-status{position:absolute;bottom:10px;right:10px;max-width:70%;background:#06182bf0;border:1px solid #a9d4ff66;border-radius:8px;padding:7px 10px;font-size:11px;pointer-events:none}.spectator-status small{display:block;margin-top:3px;color:#b4d6ff}@media(max-height:650px){.lobby-roster{max-height:75px}.message{padding:10px 14px}.spectator-status{font-size:10px}}@media(max-width:420px){.rooms-bar input{font-size:16px!important}.spectator-status{bottom:32px;max-width:90%}.lobby-roster{max-height:95px}}
+
+/* Keep joining in one clear row; give the field priority on phones. */
+.room-identity .copy-code{display:block;border:0;background:transparent;padding:2px 0;color:#fff;font:900 25px ui-monospace,monospace;letter-spacing:.16em;text-align:left;min-height:44px;cursor:pointer}.copy-code[hidden]{display:none}
+.room-actions{align-items:end}.room-actions form{order:-1;display:grid;grid-template-columns:minmax(100px,1fr) auto;align-items:end;gap:4px 6px;min-width:200px}.room-actions form label{grid-column:1/-1;font-size:10px;font-weight:800;color:#c8dfff}.room-actions input{width:100%;min-height:44px;font-size:16px;letter-spacing:.04em}.room-actions .room-button{min-height:44px}.room-actions #join-button{background:#f7fbff;color:#002e5d;font-size:13px}.app.private-game:not(.settings-open) #join-room,.app.private-game:not(.settings-open) #solo-room,.app.private-game:not(.settings-open) #create-room,.app.private-game:not(.settings-open) #public-room{display:none}.app.private-game .room-identity{min-width:95px}.app.private-game .room-identity strong{font-size:10px;color:#b4d6ff}
+@media(max-width:760px){
+  .app{padding:max(4px,env(safe-area-inset-top)) max(4px,env(safe-area-inset-right)) max(4px,env(safe-area-inset-bottom)) max(4px,env(safe-area-inset-left));gap:4px;min-height:0}
+  .header{padding:2px 6px}.header .eyebrow{display:none}.identity .mark{width:30px;height:23px;line-height:18px;font-size:19px;border-width:2px}.identity h1{font-size:15px}.connection{font-size:9px;max-width:120px}.rooms-bar{margin:0 2px;padding:8px;gap:6px}
+  .room-identity{min-width:75px}.room-identity small{font-size:7px}.room-identity strong{font-size:11px}.name-picker{min-width:0;flex:1}.name-picker input{min-height:40px;width:100%;max-width:none;font-size:16px}.name-picker label{font-size:8px}
+  .room-actions{display:flex;flex-wrap:wrap;gap:6px;flex-basis:100%;width:100%;margin:0;align-items:end}.room-actions form{flex:1 0 100%;min-width:0;grid-template-columns:minmax(0,1fr) 76px}.room-actions input{font-size:18px!important;min-height:46px;min-width:0}.room-actions #join-button{font-size:14px;min-height:46px}.room-actions #solo-room,.room-actions #create-room{flex:1}.room-actions #copy-room{flex:1}.app.private-game:not(.settings-open) .room-actions{flex-basis:auto;width:auto;margin-left:auto}.app.private-game:not(.settings-open) .name-picker{min-width:100px}
+  .scoreboard{flex:none;padding:5px 8px;border-radius:9px;gap:4px}.app:not(.settings-open) .stats{width:100%;justify-content:space-around;gap:8px}.stat small{font-size:7px;letter-spacing:.06em}.stat strong{font-size:18px;line-height:1.1}.stat .status{font-size:10px;line-height:1.8}.stat strong span{font-size:10px}
+  .matchup{min-height:28px;gap:6px;padding:0 6px;flex:none}.opponent-icon{width:24px;height:24px;font-size:8px;border-radius:5px}.matchup-team{gap:5px}.matchup-team strong{font-size:11px;margin-top:1px}.matchup-team small{font-size:6px}.matchup-progress{width:130px}.matchup-progress>span{font-size:8px;margin-bottom:3px}
+  .app:not(.settings-open) .stage{height:0;min-height:100px;flex:1 1 0;border-radius:10px}.footer{flex:none;min-height:48px;gap:6px;padding:0 2px}.instructions{display:none}.settings-toggle,.sound-control{min-height:44px;font-size:10px;padding:7px 8px}.dpad{margin-left:auto;gap:4px}.dpad button{width:48px;height:48px;min-height:48px;font-size:22px}.app:not(.settings-open) .footer .instructions{display:none}
+  .game-broadcast{display:none}.app.in-round:not(.settings-open) .header,.app.in-round:not(.settings-open) .rooms-bar{display:none}.app.in-round:not(.settings-open) .game-broadcast{display:none}.app.in-round:not(.settings-open) .field-label{top:6px;left:6px}.app.in-round:not(.settings-open) .field-label .pill{font-size:7px;padding:3px 5px}.you-note{bottom:6px;left:6px;padding:4px 6px;font-size:8px}.spectator-status{bottom:25px;right:6px;max-width:90%;font-size:10px}
+  .app.settings-open{height:auto;min-height:100dvh;padding:10px}.app.settings-open .stage{height:180px;min-height:180px;flex:none}.app.settings-open .rooms-bar{display:flex}.app.settings-open .toolbar{justify-content:flex-start;width:100%}
+}
+@media(max-height:500px) and (orientation:landscape){.app.in-round:not(.settings-open) .game-broadcast{display:none}.app.in-round:not(.settings-open){gap:3px}.app.in-round:not(.settings-open) .matchup{display:none}.app.in-round:not(.settings-open) .scoreboard{padding:3px 8px}.app.in-round:not(.settings-open) .stat small{display:inline;margin-right:5px}.app.in-round:not(.settings-open) .stat strong{font-size:16px}.app.in-round:not(.settings-open) .footer{min-height:44px}.app.in-round:not(.settings-open) .dpad button{height:44px;min-height:44px}}
 </style>
 </head>
 <body>
 <div class="app">
 <header class="header"><div class="identity"><div class="mark" aria-hidden="true">Y</div><div><div class="eyebrow">PROVO, UTAH · GAME DAY 2026</div><h1>COUGAR CROSSING</h1></div></div><div class="connection"><i class="dot" id="dot"></i><span id="connection">Connecting…</span></div></header>
-<section class="rooms-bar" aria-label="Game rooms"><div class="room-identity"><small>YOUR GAME</small><strong id="room-label">Public game</strong></div><div class="name-picker"><label for="name">YOUR NAME</label><input id="name" maxlength="16" placeholder="e.g. Cosmo" aria-describedby="name-help" autocomplete="nickname" spellcheck="false"><span id="name-help" class="sr-only">Choose a name, up to 16 characters. It is saved on this device.</span></div><div class="room-actions"><button class="room-button" id="solo-room">Play solo</button><button class="room-button" id="create-room">Create team</button><form id="join-room"><label class="sr-only" for="room-code">Room code</label><input id="room-code" maxlength="256" placeholder="Code or invite" aria-label="Room code or invite link" aria-describedby="room-feedback" autocomplete="off" autocapitalize="characters" spellcheck="false" required><button class="room-button" type="submit" id="join-button">Join room</button></form><button class="room-button" id="copy-room" hidden>Copy invite</button><button class="room-button subtle" id="public-room" hidden>Public game</button></div><div id="room-feedback" class="room-feedback" role="status">Play with everyone, go solo, or create a private room for your team.</div></section>
+<section class="rooms-bar" aria-label="Game rooms"><div class="room-identity"><small>YOUR GAME</small><strong id="room-label">Public game</strong><button class="copy-code" id="copy-code" type="button" hidden aria-label="Copy room code"></button></div><div class="name-picker"><label for="name">YOUR NAME</label><input id="name" maxlength="16" placeholder="e.g. Cosmo" aria-describedby="name-help" autocomplete="nickname" spellcheck="false"><span id="name-help" class="sr-only">Choose a name, up to 16 characters. It is saved on this device.</span></div><div class="room-actions"><button class="room-button" id="solo-room">Play solo</button><button class="room-button" id="create-room">Host game</button><form id="join-room"><label for="room-code">Join a friend</label><input id="room-code" maxlength="256" placeholder="4-digit code" inputmode="numeric" enterkeyhint="go" aria-label="Room code or invite link" aria-describedby="room-feedback" autocomplete="off" autocapitalize="characters" spellcheck="false" required><button class="room-button" type="submit" id="join-button">Join</button></form><button class="room-button" id="copy-room" hidden>Copy invite link</button><button class="room-button subtle" id="public-room" hidden>Public game</button></div><div id="room-feedback" class="room-feedback" role="status">Play with everyone, go solo, or create a private room for your team.</div></section>
 <section class="scoreboard" aria-label="Game scoreboard"><div class="stats"><div class="stat"><small>IN PLAY</small><strong id="alive">0 <span>/ 40</span></strong></div><div class="stat"><small>YARDS</small><strong id="score">0</strong></div><div class="stat"><small>BEST</small><strong id="best">0</strong></div><div class="stat"><small>STATUS</small><strong class="status" id="lives">IN PLAY</strong></div></div><div class="toolbar"><div class="mode-picker"><label for="game-mode">GAME MODE</label><select id="game-mode" aria-describedby="mode-status" disabled><option value="course">1,200 yd course</option><option value="endless">Endless ∞</option></select></div><div class="mode-picker"><label for="mode">DIFFICULTY</label><select id="mode" aria-describedby="mode-status" disabled><option value="easy">Easy</option><option value="normal">Normal</option><option value="hard">Hard</option></select></div><button class="action secondary" id="restart">New kickoff</button><button class="action secondary lobby-control" id="lobby">Team lobby</button><button class="action" id="fill">Fill with 39 Bots</button></div></section>
 <section class="matchup" aria-label="Opponent difficulty"><div class="matchup-team"><span class="opponent-icon" id="opponent-icon">UT</span><div><small id="stage-number">STAGE 1 / 12 · WARMUP</small><strong id="opponent-name">Utah Tech</strong></div></div><div class="matchup-progress"><span id="next-stage">Next: Colorado State · 100 yd</span><div class="progress-track"><i id="stage-progress"></i></div></div></section>
 <div class="mode-status" id="mode-status" role="status">Easy · captain selects difficulty</div>
@@ -448,9 +464,12 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     const url=new URL(location.href);if(roomContext.kind==='private')url.searchParams.set('room',roomContext.code);else url.searchParams.delete('room');history.replaceState(null,'',url);
     if(!nameDirty&&data.name){playerName=data.name;if(data.name!=='Cougar Fan'||$('name').value)$('name').value=data.name;try{sessionStorage.setItem('cougarPlayerName',$('name').value);}catch{}}
     setRoomBusy(false);document.querySelector('.rooms-bar').classList.remove('has-feedback','has-error');
-    if(roomContext.kind==='private')$('room-code').value=roomContext.code;
-    text('room-label',roomContext.label);$('solo-room').disabled=roomContext.kind==='solo';$('copy-room').hidden=roomContext.kind!=='private';$('public-room').hidden=roomContext.kind==='public';
-    text('room-feedback',roomContext.kind==='solo'?'Your own game. You control difficulty, bots, and kickoff.':roomContext.kind==='private'?`Share code ${roomContext.code} or copy the invite link. The captain starts kickoff.`:'Play with everyone, go solo, or create a private room for your team.');
+    $('room-code').value='';
+    document.querySelector('.app').classList.toggle('private-game',roomContext.kind!=='public');
+    $('copy-code').hidden=roomContext.kind!=='private';text('copy-code',roomContext.code||'');
+    $('copy-code').setAttribute('aria-label',`Copy room code ${roomContext.code||''}`);
+    text('room-label',roomContext.kind==='private'?'Team room':roomContext.label);$('solo-room').disabled=roomContext.kind==='solo';$('copy-room').hidden=roomContext.kind!=='private';$('public-room').hidden=roomContext.kind==='public';
+    text('room-feedback',roomContext.kind==='solo'?'Your own game. You control difficulty, bots, and kickoff.':roomContext.kind==='private'?`Share code ${roomContext.code} or copy the invite link. The captain starts kickoff.`:'Enter your friend’s code and tap Join. To invite friends, choose Host game.');
     everJoined=true;myId=data.id;if(nameDirty)saveName();seq=data.ack||0;pending=[];needsRebase=true;session=data.session||'';socket.auth=auth();try{sessionStorage.setItem('cougarSession',session);}catch{};});
   socket.on('notice',showToast);
   function roomMessage(message,visible=false){
@@ -459,7 +478,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   function setRoomBusy(busy){
     roomBusy=busy;document.querySelector('.room-actions').setAttribute('aria-busy',String(busy));
     for(const button of document.querySelectorAll('.room-actions button'))button.disabled=busy||(button.id==='solo-room'&&roomContext?.kind==='solo');
-    text('join-button',busy?'Joining…':'Join room');
+    text('join-button',busy?'Joining…':'Join');
   }
   function cleanPlayerName(value){return value.normalize('NFKC').replace(/[^\p{L}\p{M}\p{N} _.'’\-]/gu,'').replace(/\s+/g,' ').trim().slice(0,16)||'Cougar Fan';}
   function saveName(normalize=false){
@@ -471,7 +490,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
       if(typeof accepted==='string'&&cleanPlayerName($('name').value)===value){playerName=accepted;nameDirty=false;}
     });
   }
-  socket.on('roomError',data=>{clearTimeout(roomTimer);setRoomBusy(false);const message=data?.message||'Unable to join that room.';roomFailure=message;roomMessage(message,true);if(!round){$('public-room').hidden=false;socket.io.reconnection(false);}showToast(message);});
+  socket.on('roomError',data=>{if(data?.initial){round=null;model=null;rawSelf=null;snapshots=[];lastPacket=0;roomContext=null;document.querySelector('.app').classList.remove('playing','in-round','private-game');$('copy-code').hidden=true;$('copy-room').hidden=true;text('room-label','Choose a game');}clearTimeout(roomTimer);setRoomBusy(false);const message=data?.message||'Unable to join that room.';roomFailure=message;roomMessage(message,true);if(!round){$('public-room').hidden=false;socket.io.reconnection(false);}showToast(message);});
   function switchRoom(action,code=''){
     if(roomBusy)return;
     if(action==='join'&&code===roomContext?.code){roomFailure='';roomMessage('You’re already in this room.');showToast('You’re already in this room.');return;}
@@ -491,8 +510,13 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   $('room-code').addEventListener('input',()=>{$('room-code').setCustomValidity('');});
   $('join-room').addEventListener('submit',event=>{
     event.preventDefault();const code=roomCode($('room-code').value);
-    if(!/^[A-HJ-NP-Z2-9]{6}$/.test(code)){$('room-code').setCustomValidity('Enter a 6-character room code, or paste the full invite link.');$('room-code').reportValidity();return;}
+    if(!/^(?:[0-9]{4}|[A-HJ-NP-Z2-9]{6})$/.test(code)){$('room-code').setCustomValidity('Enter the 4-digit room code, or paste an invite link.');$('room-code').reportValidity();return;}
     $('room-code').setCustomValidity('');$('room-code').value=code;switchRoom('join',code);
+  });
+  $('copy-code').addEventListener('click',async()=>{
+    if(roomContext?.kind!=='private')return;
+    try{await navigator.clipboard.writeText(roomContext.code);showToast(`Code ${roomContext.code} copied!`);}
+    catch{roomMessage(`Room code: ${roomContext.code}. Friends can enter this code and tap Join.`,true);}
   });
   $('copy-room').addEventListener('click',async()=>{
     if(roomContext?.kind!=='private')return;
@@ -511,7 +535,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     const changed=!round||round.id!==state.round.id;
     if(changed){celebrationUntil=0;confetti=[];lastHopAt=null;landingAt=-Infinity;lastResultsKey='';$('celebration').hidden=true;shownStage=-1;snapshots=[];pending=[];seq=state.self.ack||0;clearInput();nextSend=0;cameraReady=false;localView=null;renderError={x:0,y:0};hopLift=0;}
     members=state.members||[];roster=state.players;remaining=state.alive;localReady=!!members.find(row=>row[0]===myId)?.[3];
-    round=state.round;document.querySelector('.app').classList.toggle('playing',['kickoff','running'].includes(round.phase)&&state.self.alive);
+    round=state.round;document.querySelector('.app').classList.toggle('in-round',['kickoff','running'].includes(round.phase));document.querySelector('.app').classList.toggle('playing',['kickoff','running'].includes(round.phase)&&state.self.alive);
     const rulesKey=`${round.difficulty||'easy'}:${round.gameMode||'course'}`;
     if(rulesMode!==rulesKey){rulesMode=rulesKey;rules=Game.withDifficulty(round.difficulty||'easy',round.gameMode||'course');shownStage=-1;}
     $('mode').value=state.selectedDifficulty||round.difficulty||'easy';
