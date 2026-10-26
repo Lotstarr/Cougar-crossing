@@ -311,18 +311,17 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
     tickStats.maximumMs = Math.max(tickStats.maximumMs, elapsed);
     if (elapsed > 50) tickStats.overBudget++;
   }
-  const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   function newRoom(kind) {
     if (rooms.size >= 64) return null;
     let code;
-    do { code = Array.from(crypto.randomBytes(6), n => alphabet[n % alphabet.length]).join(''); } while (rooms.has(code));
+    do { code = String(crypto.randomInt(1000, 10000)); } while (rooms.has(code));
     const room = createRoom(code, kind); rooms.set(code, room); return room;
   }
   function route(socket, request = {}, initial = false) {
     if (!request || typeof request !== 'object') return;
     if (!initial && now() - (socket.data.lastRoomAction || 0) < 750) return socket.emit('roomError', { message:'Please wait a moment before switching rooms again.' });
-    socket.data.lastRoomAction = now();
-    const fail = message => socket.emit('roomError', { message });
+    socket.data.lastRoomAction = initial ? -Infinity : now();
+    const fail = message => socket.emit('roomError', { message, initial });
     const action = request.action || 'public';
     if (!['public','solo','create','join','resume'].includes(action)) return fail('Choose Solo, Create room, or Join room.');
     let destination;
@@ -335,7 +334,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       if (!destination && action === 'resume' && socket.handshake.auth?.roomKind === 'solo') {
         destination = newRoom('solo'); freshSolo = true;
       }
-      if (!destination) return socket.emit('roomError', { code: 'ROOM_EXPIRED', message: 'This room has closed or expired. Create a new room, join another code, or play Solo.' });
+      if (!destination) return socket.emit('roomError', { code: 'ROOM_EXPIRED', initial, message: 'This room has closed or expired. Create a new room, join another code, or play Solo.' });
       if (destination.kind === 'solo' && !freshSolo) {
         const owner = [...destination.players.values()].find(p => !p.bot && p.session === socket.handshake.auth?.session);
         if (!owner) return fail('Solo games are private. Create a room to play with friends.');

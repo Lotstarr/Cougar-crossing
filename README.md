@@ -6,7 +6,7 @@ Play alone, invite your team into a private room, or join the public game.
 
 ## Features
 
-- **Solo and multiplayer:** independent solo games, private rooms with six-character codes, and a public room.
+- **Solo and multiplayer:** independent solo games, private rooms with four-digit codes, and a public room.
 - **Up to 40 players:** fill empty spots with server-controlled practice bots.
 - **Two game modes:** a 1,200-yard course or an endless return.
 - **Three difficulty settings:** Easy, Normal, and Hard.
@@ -15,13 +15,14 @@ Play alone, invite your team into a private room, or join the public game.
 - **Manual starts and restarts:** read the instructions and invite teammates before pressing **Start game**.
 - **Game-day atmosphere:** BYU uniforms, kickoff animation, stadium crowds, optional audio, touchdown celebrations, and final standings.
 - **Mixed-length rafts:** slogans include “Go Cougs,” “Kiss Me Cosmo,” “Down Utes,” and “Rise & Shout.”
-- **Desktop and mobile controls:** keyboard, on-screen buttons, and field gestures.
+- **Desktop and mobile controls:** keyboard, on-screen buttons, and field gestures. Mobile rounds tuck away the header and room controls to maximize the playfield.
 
 ## How to play
 
-1. Enter **Your name** above the game (it is remembered on this device). Choose **Play solo**, **Create team**, or enter a room code or paste an invite link and select **Join room**. You can also stay in the public game.
+1. Enter **Your name** above the game (it is remembered on this device). Choose **Play solo**, **Host game**, or enter a room code or paste an invite link and tap **Join**. You can also stay in the public game.
+   New team codes are four digits. Tap the large room code to copy it, or use **Copy invite link** so teammates can open the room directly.
 2. Open **Settings** to choose difficulty, game mode, or practice bots.
-3. If playing with friends, select **Copy invite** in your private room and share the invitation.
+3. If playing with friends, select **Copy invite link** in your private room and share the invitation.
 4. Teammates can press **I’m ready**. The roster shows names, captain, readiness, and reconnecting players. Readiness is advisory; the captain presses **Start game** when the team is ready.
 5. Cross lanes, ride rafts, and keep moving forward. The pressure line keeps closing in when you pause.
 
