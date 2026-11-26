@@ -213,6 +213,35 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
     p.nextStep = now + STEP_MS;
     return true;
   }
+  const BUMP_COOLDOWN_MS = 350;
+  function resolveBumps(players, before, at) {
+    const hits=[];
+    for(const a of players){
+      const move=before.get(a.id);
+      if(!a.alive||!move||!move.dx&&!move.dy||a.bumpUntil>=at||a.lastBumpHopAt===move.hopAt)continue;
+      for(const b of players){
+        if(a===b||!b.alive||at<(b.bumpCooldownUntil||0))continue;
+        const old=before.get(b.id)||b;
+        const ahead=(old.x-move.x)*move.dx+(old.y-move.y)*move.dy;
+        const along=(b.x-a.x)*move.dx+(b.y-a.y)*move.dy;
+        const across=Math.abs((b.x-a.x)*move.dy-(b.y-a.y)*move.dx);
+        if(ahead>=0&&ahead>along+1e-7&&Math.abs(along)<RADIUS*2&&across<RADIUS*2)
+          hits.push({a,b,move,distance:Math.abs(along)});
+      }
+    }
+    hits.sort((a,b)=>a.move.hopAt-b.move.hopAt||a.a.id.localeCompare(b.a.id)||a.distance-b.distance||a.b.id.localeCompare(b.b.id));
+    const results=[];
+    for(const {a,b,move} of hits){
+      if(!a.alive||!b.alive||a.bumpUntil>=at||a.lastBumpHopAt===move.hopAt||at<(b.bumpCooldownUntil||0))continue;
+      const tx=(b.hop?.tx??b.x)+move.dx,ty=(b.hop?.ty??Math.round(b.y))+move.dy;
+      b.ack=Math.max(b.ack||0,b.queued?.seq||0);b.queued=null;
+      b.hop={x:b.x,y:b.y,tx,ty,at};b.nextStep=at+STEP_MS;
+      b.bumpUntil=at+HOP_MS;b.bumpCooldownUntil=at+BUMP_COOLDOWN_MS;
+      b.bumpRevision=((b.bumpRevision||0)+1)>>>0;a.lastBumpHopAt=move.hopAt;
+      results.push({attackerId:a.id,targetId:b.id,dx:move.dx,dy:move.dy});
+    }
+    return results;
+  }
   function advance(p, now, seed, startedAt) {
     const old = p.simAt;
     if (now <= old || !p.alive) return;
@@ -280,7 +309,7 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
   }
   function interpolationDelay(rtt, jitter = 0) { return clamp(70 + rtt / 2 + jitter * 2, 90, 260); }
 
-  return { STAR_MS, STAR_INTERVAL, invincible, starFor, collectStar, MAX_PLAYERS, MODES, profile, endless, withDifficulty: createGameRules, WIDTH, HOP_MS, STEP_MS, RADIUS, STAGE_YARDS, YARDS_PER_ROW, ROWS_PER_STAGE, OPPONENTS, FINISH_ROW, stageFor, difficulty, sledsFor, blocked, blitzes, mod, clamp, hash32, random, yardNumber, lane, obstacles, rafts, danger, beginHop, advance, simulate, predict, interpolationDelay, copy };
+  return { BUMP_COOLDOWN_MS, resolveBumps, STAR_MS, STAR_INTERVAL, invincible, starFor, collectStar, MAX_PLAYERS, MODES, profile, endless, withDifficulty: createGameRules, WIDTH, HOP_MS, STEP_MS, RADIUS, STAGE_YARDS, YARDS_PER_ROW, ROWS_PER_STAGE, OPPONENTS, FINISH_ROW, stageFor, difficulty, sledsFor, blocked, blitzes, mod, clamp, hash32, random, yardNumber, lane, obstacles, rafts, danger, beginHop, advance, simulate, predict, interpolationDelay, copy };
 }
 const Game = createGameRules();
 if (typeof module !== 'undefined' && module.exports) module.exports = Game;
@@ -291,7 +320,7 @@ const SNAPSHOT_REASONS = ['', 'tackle', 'water', 'sideline', 'scroll wall', 'bli
 function encodeSnapshot(packet, revision, version = 2) {
   const p=packet.self, count=packet.players.length;
   if(count>Game.MAX_PLAYERS)throw new Error('Too many snapshot players');
-  const bytes=new Uint8Array(26+count*9+49+(p.hop?40:0)+(p.queued?14:0)+(version===3?12+count*8:0)),view=new DataView(bytes.buffer);let at=0;
+  const bytes=new Uint8Array(26+count*9+49+(p.hop?40:0)+(p.queued?14:0)+(version>=3?12+count*8:0)+(version>=4?12:0)),view=new DataView(bytes.buffer);let at=0;
   const u8=value=>{view.setUint8(at,value);at++;},i8=value=>{view.setInt8(at,value);at++;},u32=value=>{view.setUint32(at,value);at+=4;};
   const f32=value=>{view.setFloat32(at,value);at+=4;},f64=value=>{view.setFloat64(at,value);at+=8;};
   u8(version);u32(revision);f64(packet.t);f64(packet.round.minY);u32(packet.round.pressureStage||0);u8(count);
@@ -300,7 +329,8 @@ function encodeSnapshot(packet, revision, version = 2) {
   const reason=SNAPSHOT_REASONS.indexOf(p.reason||'');u8(reason<0?8:reason);
   u8(p.hop?1:0);if(p.hop)for(const field of ['x','y','tx','ty','at'])f64(p.hop[field]);
   u8(p.queued?1:0);if(p.queued){i8(p.queued.dx);i8(p.queued.dy);u32(p.queued.seq);f64(p.queued.at);}
-  if(version===3){f64(p.invincibleUntil||0);u32((p.lastStarRow??-1)+1);for(const row of packet.players)f64(row[6]||0);}
+  if(version>=3){f64(p.invincibleUntil||0);u32((p.lastStarRow??-1)+1);for(const row of packet.players)f64(row[6]||0);}
+  if(version>=4){u32(p.bumpRevision||0);f64(p.bumpUntil||0);}
   return bytes;
 }
 function decodeSnapshot(data,setup) {
@@ -308,7 +338,7 @@ function decodeSnapshot(data,setup) {
   const u8=()=>view.getUint8(at++),i8=()=>view.getInt8(at++),u32=()=>{const n=view.getUint32(at);at+=4;return n;};
   const f32=()=>{const n=view.getFloat32(at);at+=4;return +n.toFixed(4);},f64=()=>{const n=view.getFloat64(at);at+=8;return n;};
   if(view.byteLength<26)throw new Error('Unsupported snapshot');
-  const version=u8();if(version!==2&&version!==3)throw new Error('Unsupported snapshot');
+  const version=u8();if(version!==2&&version!==3&&version!==4)throw new Error('Unsupported snapshot');
   const revision=u32();if(!setup||revision!==setup.revision)return null;
   const t=f64(),minY=f64(),pressureStage=u32(),count=u8();
   if(count!==setup.roster.length||count>Game.MAX_PLAYERS||view.byteLength<26+count*9+49)throw new Error('Invalid snapshot roster');
@@ -316,7 +346,8 @@ function decodeSnapshot(data,setup) {
   const self={x:f64(),y:f64(),alive:!!u8(),lives:u8(),score:f64(),nextStep:f64(),simAt:f64(),ack:u32(),reason:SNAPSHOT_REASONS[u8()]??'eliminated',hop:null,queued:null};
   if(u8())self.hop={x:f64(),y:f64(),tx:f64(),ty:f64(),at:f64()};
   if(u8())self.queued={dx:i8(),dy:i8(),seq:u32(),at:f64()};
-  if(version===3){self.invincibleUntil=f64();self.lastStarRow=u32()-1;for(const row of players)row[6]=f64();}
+  if(version>=3){self.invincibleUntil=f64();self.lastStarRow=u32()-1;for(const row of players)row[6]=f64();}
+  if(version>=4){self.bumpRevision=u32();self.bumpUntil=f64();}
   if(at!==view.byteLength)throw new Error('Invalid snapshot length');
   const {roster,revision:ignored,...state}=setup;
   return {...state,t,round:{...setup.round,minY,pressureStage},count,alive:players.reduce((sum,p)=>sum+p[3],0),players,self};

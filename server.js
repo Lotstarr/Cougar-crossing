@@ -27,7 +27,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
     const MAX = Game.MAX_PLAYERS, START_WALL = -Math.ceil(Game.MAX_PLAYERS / Game.WIDTH) - 1, KICKOFF_MS = 4200, RECONNECT_MS = 15000;
     let round, botMode = false, teamMode = true;
     let selectedDifficulty = 'easy', selectedGameMode = 'course', rules = Game;
-    let wallAt = 0, entrantRecords = new Map();
+    let physicsAt = 0, wallAt = 0, entrantRecords = new Map();
     let setupSignature = '', setupRevision = 0, latestSetup;
     let leaderboardAt=-Infinity, leaderboardPhase='', leaderboardSignature='';
     const humans = () => [...players.values()].filter(p => !p.bot);
@@ -44,7 +44,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
     function reset() {
       if (botMode) fill();
       const at = now(); rules = Game.withDifficulty(selectedDifficulty, selectedGameMode);
-      wallAt = at;
+      physicsAt = wallAt = at;
       round = { id: crypto.randomUUID(), seed: crypto.randomBytes(4).readUInt32LE(0),
         phase: players.size ? teamMode ? 'lobby' : 'kickoff' : 'waiting', minY: START_WALL, difficulty: selectedDifficulty, gameMode: selectedGameMode,
         winner: '', winnerId: '', finishReason: '', entrants: 0, pressureStage: 0, finishers: [] };
@@ -58,7 +58,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       const startY = -(Math.floor(index / 12)) || 0;
       Object.assign(p, { pressureY: startY - 1.5, pressurePeak: startY, pressureAt: at, x: ((index * 7 + 5) % 12) + 0.5, y: startY,
         ready: !!p.bot, alive: p.bot || p.connected, lives: 1, score: 0, hop: null, nextStep: at, simAt: at,
-        invincibleUntil: 0, lastStarRow: -1, ack: 0, queued: null, reason: '', finishedAt: null, aiAt: at + 200 + Math.random() * 400 });
+        bumpRevision: 0, bumpUntil: 0, bumpCooldownUntil: 0, lastBumpHopAt: null, invincibleUntil: 0, lastStarRow: -1, ack: 0, queued: null, reason: '', finishedAt: null, aiAt: at + 200 + Math.random() * 400 });
       if (p.alive && !['running','over'].includes(round.phase)) entrantRecords.set(p.id,p);
     }
     function add(id, name, bot) {
@@ -128,6 +128,19 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       if (hazard) eliminate(p, hazard, at);
       else if (p.alive && !rules.endless && p.score >= Game.FINISH_ROW) completeCourse(p);
     }
+    function advancePlayers(at) {
+      // All runners advance on one clock so packet timing and roster order cannot choose a shove.
+      let step=Math.max(physicsAt,at-1000);
+      do {
+        step=Math.min(at,step+12.5);
+        const active=alive(),before=new Map(active.map(p=>[p.id,{x:p.x,y:p.y,
+          dx:p.hop&&Math.abs(p.hop.tx-p.hop.x)>Math.abs(p.hop.ty-p.hop.y)?Math.sign(p.hop.tx-p.hop.x):0,
+          dy:p.hop&&Math.abs(p.hop.ty-p.hop.y)>=Math.abs(p.hop.tx-p.hop.x)?Math.sign(p.hop.ty-p.hop.y):0,hopAt:p.hop?.at}]));
+        for(const p of active)if(step>=p.simAt){advancePressure(p,step);simulate(p,step);}
+        rules.resolveBumps(active,before,step);
+        physicsAt=step;
+      } while(step<at);
+    }
     function think(p, at) {
       if (!p.alive || p.hop || at < p.aiAt) return;
       p.aiAt = at + 210 + Math.random() * 190;
@@ -151,7 +164,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
     }
     function self(p) {
       return { x: p.x, y: p.y, alive: p.alive, lives: p.lives, score: p.score, hop: p.hop, queued: p.queued,
-        invincibleUntil:p.invincibleUntil||0,lastStarRow:p.lastStarRow??-1, nextStep: p.nextStep, simAt: p.simAt, ack: p.ack, reason: p.reason };
+        bumpRevision:p.bumpRevision||0,bumpUntil:p.bumpUntil||0, invincibleUntil:p.invincibleUntil||0,lastStarRow:p.lastStarRow??-1, nextStep: p.nextStep, simAt: p.simAt, ack: p.ack, reason: p.reason };
     }
     function metadata(packet) {
       const {players,t,alive,round:details,...settings}=packet;
@@ -169,7 +182,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       const polling=socket.conn.transport.name==='polling';
       const deliver=reliable||polling;
       if(!reliable&&polling&&socket.conn.writeBuffer.length>=12)return;
-      if(![2,3].includes(socket.data.snapshotVersion)){if(deliver)socket.emit('state',local);else socket.volatile.emit('state',local);return;}
+      if(![2,3,4].includes(socket.data.snapshotVersion)){if(deliver)socket.emit('state',local);else socket.volatile.emit('state',local);return;}
       if(socket.data.snapshotRoom!==code||socket.data.setupRevision!==setup.revision){
         socket.data.snapshotRoom=code;socket.data.setupRevision=setup.revision;
         socket.compress(false).emit('snapshotSetup',setup);
@@ -189,7 +202,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       if (round.phase === 'kickoff' && at >= round.startedAt) {
         round.phase = 'running';
         entrantRecords = new Map([...players].filter(([,p])=>p.alive));
-        for (const p of players.values()) p.simAt = at;
+        physicsAt=at;for (const p of players.values()) p.simAt = at;
       }
       if (round.phase === 'running') {
         if (rules.endless) {
@@ -202,12 +215,8 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
         } else {
           round.minY = START_WALL + Math.max(0, at - round.startedAt - rules.profile.wallDelay) / 1000 * rules.profile.wallSpeed;
         }
-        for (const p of players.values()) {
-          if (!p.alive) continue;
-          advancePressure(p, at);
-          simulate(p, at);
-          if (p.bot && p.alive) think(p, at);
-        }
+        advancePlayers(at);
+        for (const p of players.values()) if (p.bot && p.alive) think(p, at);
         // Finishers are safe spectators; the final active runner gets to complete their run.
         if (!alive().length) finish(at);
       }
@@ -257,7 +266,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
         if (!Number.isSafeInteger(seq) || seq <= p.ack || seq > p.ack + 10000 || !Number.isInteger(dx) || !Number.isInteger(dy) || dy < 0 || Math.abs(dx) + Math.abs(dy) !== 1 || p.queued && seq <= p.queued.seq) return;
         p.inputBudget = Math.min(20, p.inputBudget + (at - p.budgetAt) * .04); p.budgetAt = at;
         if (p.inputBudget < 1) return; p.inputBudget--;
-        simulate(p, at); if (!p.alive) return;
+        advancePlayers(at); if (!p.alive) return;
         p.queued = { dx, dy, seq, at };
         simulate(p, at);
       });
@@ -375,7 +384,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
   } }));
   app.get('/health', (_req,res) => res.json({ ok: true, players: mainRoom.players.size, phase: mainRoom.round.phase, rooms: rooms.size, totalPlayers: [...rooms.values()].reduce((sum,r) => sum + r.players.size, 0) }));
   io.on('connection', socket => {
-    socket.data.snapshotVersion=[2,3].includes(socket.handshake.auth?.snapshotVersion)?socket.handshake.auth.snapshotVersion:1;
+    socket.data.snapshotVersion=[2,3,4].includes(socket.handshake.auth?.snapshotVersion)?socket.handshake.auth.snapshotVersion:1;
     socket.on('clock', (_data, reply) => { if (typeof reply === 'function') reply(now()); });
     socket.on('room', request => route(socket, request));
     const auth = socket.handshake.auth || {};
