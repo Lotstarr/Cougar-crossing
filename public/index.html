@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="theme-color" content="#002e5d"><title>Cougar Crossing · BYU Game Day</title>
 <style>
 :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;color:#f7fbff;background:#071b32;color-scheme:dark}*{box-sizing:border-box}body{margin:0;overflow:hidden}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.4}.app{height:100vh;height:100dvh;display:flex;flex-direction:column;max-width:1440px;margin:auto;padding:16px 24px 12px;gap:12px}.header{display:flex;align-items:center;justify-content:space-between;gap:12px}.identity{display:flex;align-items:center;gap:12px}.mark{width:54px;height:38px;border:3px solid white;border-radius:50%;font-family:Georgia,serif;font-style:italic;font-weight:bold;font-size:31px;text-align:center;line-height:31px;background:#0047ba}.eyebrow{font-size:10px;letter-spacing:.19em;color:#8eaace;font-weight:800}.identity h1{font-size:clamp(16px,2.5vw,25px);margin:2px 0 0;letter-spacing:-.04em}.connection{font-size:11px;color:#9ab6d2;display:flex;align-items:center;gap:7px}.dot{width:7px;height:7px;border-radius:50%;background:#66d7a3;box-shadow:0 0 10px #66d7a350}.scoreboard{background:#0f2a48;border:1px solid #ffffff12;border-radius:13px;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;gap:10px;box-shadow:0 5px 16px #0001}.stats{display:flex;align-items:center;gap:28px}.stat small{display:block;font-size:9px;color:#8ba9ca;letter-spacing:.12em;font-weight:800}.stat strong{font-size:23px;font-variant-numeric:tabular-nums;line-height:1.2}.stat strong span{font-size:13px;color:#8ba9ca}.stat .status{font-size:14px;color:#b4d6ff;white-space:nowrap;line-height:1.9}.toolbar{display:flex;gap:7px;align-items:center}.toolbar input{width:120px;border:1px solid #ffffff20;background:#071e37;border-radius:8px;padding:9px 10px;color:white;font-size:11px;outline:none}.toolbar input:focus{border-color:#79b4ff}button.action{background:#fff;color:#002e5d;border:none;font-size:11px;font-weight:850;padding:11px 13px;border-radius:8px;transition:background .15s}.action.secondary{background:#254b74;color:#f5faff}.action:hover{background:#c7dfff}.action.secondary:hover{background:#355f8b}.stage{position:relative;flex:1;min-height:180px;overflow:hidden;border:1px solid #ffffff18;border-radius:16px;background:#0c2340;box-shadow:0 14px 30px #0002}canvas{display:block;width:100%;height:100%;touch-action:none;outline:none}.field-label{position:absolute;top:12px;left:14px;display:flex;gap:6px;pointer-events:none}.pill{background:#082844ed;border:1px solid #ffffff19;border-radius:5px;padding:5px 8px;font-size:9px;font-weight:800;letter-spacing:.09em}.pill.easy{background:#ecfff1;color:#216445;border:0}.overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;text-align:center}.overlay[hidden]{display:none}.overlay.kickoff{align-items:flex-start;padding-top:10px}.overlay.kickoff .message{padding:13px 22px}.overlay.kickoff .message h2{font-size:22px}.overlay.kickoff .message p{margin-top:5px;font-size:11px}.message{background:#071d36ed;border:1px solid #ffffff24;border-radius:15px;padding:22px 32px;box-shadow:0 12px 35px #0004;max-width:90%}.message h2{margin:0;font-size:28px;letter-spacing:-.03em}.message .action{pointer-events:auto;margin-top:16px}.message p{color:#acc5df;max-width:300px;line-height:1.5;font-size:12px;margin:9px 0 0}.toast{position:absolute;left:50%;top:45px;transform:translateX(-50%);background:#071d36ec;color:#f4f9ff;padding:9px 14px;border-radius:9px;font-size:11px;text-align:center;max-width:85%;pointer-events:none}.toast[hidden]{display:none}.you-note{position:absolute;bottom:12px;left:14px;color:#d9eaf8;font-size:10px;background:#082844d9;border-radius:6px;padding:6px 9px;pointer-events:none}.footer{display:flex;justify-content:space-between;align-items:center;gap:14px;min-height:50px}.instructions{font-size:11px;color:#a7c1de;line-height:1.6}.instructions b{color:white;font-weight:700}.legend{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}.legend span{font-size:8px;border-radius:3px;padding:2px 4px;border-bottom:2px solid var(--team);background:#ffffff0b;color:#b8cfe6}.dpad{display:flex;gap:5px;flex-shrink:0;align-items:center}.dpad button{width:46px;height:42px;color:#fff;background:#1b406a;border:1px solid #ffffff1a;border-bottom:3px solid #03172e;border-radius:8px;font-size:18px;touch-action:none;user-select:none;-webkit-user-select:none}.dpad button:active,.dpad button.pressed{background:#3978bc;transform:translateY(1px)}.footnote{font-size:9px;color:#6e8eaf}.footnote a{color:#9bb8d7;text-decoration:none}@media(max-width:760px){.app{padding:10px;gap:8px}.scoreboard{padding:10px}.stats{gap:15px}.stat strong{font-size:20px}.toolbar{gap:5px}.toolbar input{display:none}.action.secondary{display:none}.toolbar .action{font-size:10px;padding:10px}.legend{max-width:290px}.header .eyebrow{font-size:8px}.connection{font-size:9px}.identity{gap:8px}.mark{width:43px;height:31px;font-size:25px;line-height:25px}.footer{gap:6px}.instructions{font-size:10px}.dpad{gap:3px}.dpad button{width:37px;height:41px}.footnote{display:none}.you-note{font-size:9px}.message h2{font-size:23px}}@media(max-width:420px){.stats{gap:9px}.stat strong{font-size:18px}.stat small{font-size:8px}.stat .status{font-size:11px}.legend{display:none}.instructions{max-width:145px}.dpad button{width:34px}.toolbar .action{padding:10px 8px}.connection{max-width:78px;text-align:right}.field-label{top:9px;left:9px}}
@@ -48,6 +48,63 @@ button:focus-visible{outline:2px solid #88c6ff;outline-offset:3px}.lobby-control
 @media(max-width:760px){.app:not(.settings-open) .dpad button{width:56px;height:50px}.app:not(.settings-open) .scoreboard{padding:5px 10px}.app:not(.settings-open) .stage{border-radius:8px}.app:not(.settings-open) .message h2{font-size:22px}.app:not(.settings-open) .rooms-bar{padding:7px}.app:not(.settings-open) .room-actions form label{font-size:9px}.app:not(.settings-open) .room-actions input{min-height:44px}.app:not(.settings-open) .message p{font-size:11px}}
 @media(max-height:500px){.results-board{max-height:125px}.app:not(.settings-open) .message{padding:8px 14px}.app:not(.settings-open) .message h2{font-size:18px}}
 .overlay.watching{align-items:flex-end;padding:0 0 50px}.app:not(.settings-open) .overlay.watching .message{background:none;border:0;box-shadow:none;padding:0;min-width:0}.overlay.watching .message h2,.overlay.watching .message p{display:none}.app:not(.settings-open) .overlay.watching .message .action{margin-top:0;box-shadow:0 2px 8px #0004}
+/* Stable mobile shell: browser chrome and the keyboard resize the shell, never the page. */
+html{overscroll-behavior:none;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+@media(max-width:760px),(max-height:500px) and (orientation:landscape){
+  html,body,body.menu-open{width:100%;height:100%;overflow:hidden;overscroll-behavior:none}
+  .app,.app.settings-open{touch-action:manipulation;position:fixed;inset:0;width:100%;height:var(--app-height,100svh);min-height:0;max-height:var(--app-height,100svh);overflow:hidden;gap:4px;padding:max(4px,env(safe-area-inset-top)) max(4px,env(safe-area-inset-right)) max(4px,env(safe-area-inset-bottom)) max(4px,env(safe-area-inset-left))}
+  .app>*{min-width:0}.header{min-height:26px;flex:none}.app .header .identity h1{font-size:14px}
+  input,select,textarea{font-size:16px!important}
+  .app:not(.settings-open):not(.playing) .rooms-bar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);align-items:end;margin:0;padding:7px;gap:7px}
+  .app:not(.settings-open) .room-actions{display:contents}
+  .app:not(.settings-open) .name-picker{grid-column:1;grid-row:1;min-width:0;display:flex;flex-direction:column;align-items:stretch;gap:4px}
+  .app:not(.settings-open) .name-picker input{width:100%;max-width:none;min-height:44px}
+  .app:not(.settings-open) #join-room{grid-column:2;grid-row:1;min-width:0;grid-template-columns:minmax(0,1fr) 56px;gap:4px}
+  .app:not(.settings-open) #join-room input,.app:not(.settings-open) #join-button{min-height:44px;height:44px;padding:7px;min-width:0;font-size:16px!important}
+  .app:not(.settings-open) #join-room label,.app:not(.settings-open) .name-picker label{font-size:9px;line-height:12px;letter-spacing:0}
+  .app:not(.settings-open) #solo-room,.app:not(.settings-open) #create-room{width:100%;min-height:44px;font-size:12px}
+  .app:not(.settings-open) .room-feedback{grid-column:1/-1;line-height:1.4}
+  .app.private-game:not(.settings-open) .room-identity{grid-column:1;grid-row:1;min-width:0;margin:0}
+  .app.private-game:not(.settings-open) .name-picker{grid-column:2;grid-row:1;min-width:0}
+  .app.private-game:not(.settings-open) #copy-room{grid-column:1/-1;min-height:44px}
+  .app.in-round:not(.settings-open) .rooms-bar,.app.has-results:not(.settings-open) .rooms-bar,.app.has-results:not(.settings-open) .header{display:none}
+  .app:not(.settings-open) .scoreboard{padding:5px 9px;min-height:40px;border-radius:7px}
+  .app:not(.settings-open) .stats{display:grid;grid-template-columns:1fr 1fr 1.65fr;align-items:center;gap:8px;width:100%}
+  .app:not(.settings-open) .stat:nth-child(2){text-align:center}.app:not(.settings-open) .compact-opponent{text-align:right;overflow:hidden}
+  .app:not(.settings-open) .stat small{font-size:8px;display:block}.app:not(.settings-open) .stat strong{font-size:19px;line-height:1.1;display:block;white-space:nowrap}
+  .app:not(.settings-open) .compact-opponent strong{font-size:12px;overflow:hidden;text-overflow:ellipsis}
+  .app:not(.settings-open) .stage{flex:1 1 0;height:0;min-height:0;border-radius:7px;box-shadow:none}
+  .app:not(.settings-open) .footer{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:7px;min-height:56px;padding:0;flex:none}
+  .app:not(.settings-open) .settings-toggle{grid-column:1;grid-row:1;margin:0;width:44px;height:48px}
+  .app:not(.settings-open) .dpad{grid-column:2;grid-row:1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;width:100%;margin:0}
+  .app:not(.settings-open) .dpad button{width:100%;min-width:44px;height:56px;min-height:56px;font-size:25px;border-radius:10px}
+  .app:not(.settings-open) .records-button{grid-column:3;grid-row:1;margin:0;width:44px;padding:0}
+  .app:not(.settings-open) .course-map{width:50px;right:5px;top:5px}.app:not(.settings-open) .course-map canvas{width:48px;height:68px}
+  .app:not(.settings-open) #star-status{top:6px;font-size:11px;padding:6px 10px;max-width:calc(100% - 112px);text-align:center}
+  .app:not(.settings-open) .message{min-width:0;width:min(340px,94%);max-width:94%;max-height:94%;padding:14px 16px}
+  .app:not(.settings-open) .overlay.kickoff .message{width:min(240px,90%)}
+  .app:not(.settings-open) .message h2{font-size:22px}.app:not(.settings-open) .message .action{min-height:44px;font-size:13px}
+  .app:not(.settings-open) .results-board{max-height:min(48vh,360px)}
+  .app.settings-open{overflow-y:auto;overscroll-behavior:contain;padding:10px max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));padding-top:max(10px,env(safe-area-inset-top))}
+  .app.settings-open .header{display:flex;padding-right:52px;min-height:44px}
+  .app.settings-open .settings-toggle{position:fixed;top:max(8px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));z-index:20;width:44px;height:44px;margin:0;padding:0;font-size:0;background:#244b75}
+  .app.settings-open .settings-toggle::before{content:'×';font-size:27px}
+  .app.settings-open .stage,.app.settings-open .matchup,.app.settings-open .dpad,.app.settings-open .instructions{display:none}
+  .app.settings-open .rooms-bar{display:flex;flex:none}.app.settings-open .toolbar{display:flex;justify-content:flex-start}
+  .app.settings-open .scoreboard{flex:none}.app.settings-open .toolbar select{min-height:44px;max-width:100%}
+  .app.settings-open .mode-status{flex:none;line-height:1.4}.app.settings-open .footer{flex:none;min-height:44px}
+  .app.is-editing:not(.settings-open) .stage,.app.is-editing:not(.settings-open) .scoreboard,.app.is-editing:not(.settings-open) .footer{display:none}
+  .app.is-editing:not(.settings-open){overflow-y:auto;overscroll-behavior:contain}
+}
+@media(max-height:500px) and (orientation:landscape){
+  .app:not(.settings-open) .header{display:none}.app:not(.settings-open) .footer{min-height:44px}
+  .app:not(.settings-open) .dpad button{height:44px;min-height:44px}.app:not(.settings-open) .scoreboard{min-height:32px;padding:3px 9px}
+  .app:not(.settings-open) .stat small{display:inline;margin-right:4px}.app:not(.settings-open) .stat strong{display:inline;font-size:16px}
+  .app:not(.settings-open) .compact-opponent strong{display:block;font-size:12px}.app:not(.settings-open) .compact-opponent small{display:none}
+  .app:not(.settings-open) .course-map{display:none}.app:not(.settings-open) .message{padding:8px 12px;max-height:96%}
+  .app:not(.settings-open) .message h2{font-size:18px}.app:not(.settings-open) .results-board{max-height:35vh}
+}
 #star-status{position:absolute;z-index:4;top:8px;left:50%;transform:translateX(-50%);border-radius:20px;padding:8px 13px;background:#ffdd59;color:#17294a;font:900 13px system-ui;white-space:nowrap;pointer-events:none;box-shadow:0 0 18px #ffe97b88}#star-status[hidden]{display:none}</style>
 </head>
 <body>
@@ -566,11 +623,11 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
       if(typeof accepted==='string'&&cleanPlayerName($('name').value)===value){playerName=accepted;nameDirty=false;}
     });
   }
-  socket.on('roomError',data=>{startSoloOnJoin=false;if(data?.initial){round=null;model=null;rawSelf=null;snapshots=[];lastPacket=0;roomContext=null;document.querySelector('.app').classList.remove('playing','in-round','private-game');$('copy-code').hidden=true;$('copy-room').hidden=true;text('room-label','Choose a game');}clearTimeout(roomTimer);setRoomBusy(false);const message=data?.message||'Unable to join that room.';roomFailure=message;roomMessage(message,true);if(!round){$('public-room').hidden=false;socket.io.reconnection(false);}showToast(message);});
+  socket.on('roomError',data=>{startSoloOnJoin=false;if(data?.initial){round=null;model=null;rawSelf=null;snapshots=[];lastPacket=0;roomContext=null;document.querySelector('.app').classList.remove('playing','in-round','private-game','has-results');$('copy-code').hidden=true;$('copy-room').hidden=true;text('room-label','Choose a game');}clearTimeout(roomTimer);setRoomBusy(false);const message=data?.message||'Unable to join that room.';roomFailure=message;roomMessage(message,true);if(!round){$('public-room').hidden=false;socket.io.reconnection(false);}showToast(message);});
   function switchRoom(action,code=''){
     if(roomBusy)return;startSoloOnJoin=action==='solo';
     if(action==='join'&&code===roomContext?.code){roomFailure='';roomMessage('You’re already in this room.');showToast('You’re already in this room.');return;}
-    socket.io.reconnection(true);saveName(true);setRoomBusy(true);roomFailure='';clearTimeout(roomTimer);clearInput();
+    socket.io.reconnection(true);if(document.activeElement instanceof HTMLInputElement)document.activeElement.blur();saveName(true);setRoomBusy(true);roomFailure='';clearTimeout(roomTimer);clearInput();
     roomMessage(action==='join'?`Joining room ${code}…`:'Opening your game…',true);
     if(socket.connected)socket.emit('room',{action,code,name:playerName});
     else{socket.disconnect();roomAuth={roomAction:action,roomCode:code,roomKind:action==='solo'?'solo':action==='public'?'public':'private'};socket.auth=auth();socket.connect();}
@@ -617,7 +674,8 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     const changed=!round||round.id!==state.round.id;if(round?.phase!=='over'&&state.round.phase==='over')standingsOpen=true;
     if(changed){standingsOpen=true;celebrationUntil=0;confetti=[];lastHopAt=null;landingAt=-Infinity;lastResultsKey='';$('celebration').hidden=true;shownStage=-1;snapshots=[];pending=[];seq=state.self.ack||0;clearInput();nextSend=0;cameraReady=false;localView=null;renderError={x:0,y:0};hopLift=0;}
     members=state.members||[];roster=state.players;remaining=state.alive;localReady=!!members.find(row=>row[0]===myId)?.[3];
-    round=state.round;document.querySelector('.app').classList.toggle('in-round',['kickoff','running'].includes(round.phase));document.querySelector('.app').classList.toggle('playing',['kickoff','running'].includes(round.phase)&&state.self.alive);
+    if(!['kickoff','running'].includes(round?.phase)&&['kickoff','running'].includes(state.round.phase)&&!document.querySelector('.app').classList.contains('settings-open')&&document.activeElement instanceof HTMLInputElement)document.activeElement.blur();
+    round=state.round;document.querySelector('.app').classList.toggle('has-results',round.phase==='over');document.querySelector('.app').classList.toggle('in-round',['kickoff','running'].includes(round.phase));document.querySelector('.app').classList.toggle('playing',['kickoff','running'].includes(round.phase)&&state.self.alive);
     const rulesKey=`${round.difficulty||'easy'}:${round.gameMode||'course'}`;
     if(rulesMode!==rulesKey){rulesMode=rulesKey;rules=Game.withDifficulty(round.difficulty||'easy',round.gameMode||'course');shownStage=-1;}
     $('mode').value=state.selectedDifficulty||round.difficulty||'easy';
@@ -672,7 +730,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     const next=TEAMS[rules.endless?(stage.index+1)%TEAMS.length:stage.index+1];
     text('next-stage',next?`Next: ${next.name} · ${stage.endYards.toLocaleString()} yd`:`Finish: ${stage.endYards.toLocaleString()} yd · beat ${TEAMS[TEAMS.length-1].name}`);
   }
-  function setSettings(open){for(const button of document.querySelectorAll('.dpad button'))button.disabled=open;document.querySelector('.app').classList.toggle('settings-open',open);document.body.classList.toggle('menu-open',open);$('settings-toggle').setAttribute('aria-expanded',String(open));$('settings-toggle').setAttribute('aria-label',open?'Close settings':'Settings');text('settings-toggle',open?'Back to game':'Settings');clearInput();if(!open)window.scrollTo(0,0);}
+  function setSettings(open){for(const button of document.querySelectorAll('.dpad button'))button.disabled=open;document.querySelector('.app').classList.toggle('settings-open',open);document.body.classList.toggle('menu-open',open);$('settings-toggle').setAttribute('aria-expanded',String(open));$('settings-toggle').setAttribute('aria-label',open?'Close settings':'Settings');text('settings-toggle',open?'Back to game':'Settings');clearInput();if(!open){if(document.activeElement instanceof HTMLInputElement)document.activeElement.blur();window.scrollTo(0,0);}}
   $('settings-toggle').addEventListener('click',()=>setSettings(!document.querySelector('.app').classList.contains('settings-open')));
   window.addEventListener('keydown',event=>{if(event.key==='Escape')setSettings(false);});
   $('game-mode').addEventListener('change',()=>{socket.emit('gameMode',$('game-mode').value);canvas.focus({preventScroll:true});});
@@ -727,9 +785,40 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
       if(rules.blocked(round.seed,x,y))showToast('Blocking sled — move left or right to go around.');
     }
   }
-  function resize(){if(!window.CSS||!CSS.supports('height','100dvh'))document.documentElement.style.setProperty('--app-height',`${window.visualViewport?.height||window.innerHeight}px`);const rect=stage.getBoundingClientRect();width=rect.width;height=rect.height;dpr=Math.min(2,devicePixelRatio||1);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);tile=Math.min(width/12,height/(height<300?8:height<450?10:12.5));left=(width-tile*12)/2;}
+  const compactScreen=window.matchMedia('(max-width:760px), (max-height:500px) and (orientation:landscape)');
+  let compactTile=0,scaleWidth=0,scaleMode='',viewportWidth=0,viewportLandscape=false;
+  function resize(){
+    const rect=stage.getBoundingClientRect();width=rect.width;height=rect.height;if(!width||!height)return;
+    dpr=Math.min(2,devicePixelRatio||1);const w=Math.round(width*dpr),h=Math.round(height*dpr);
+    if(canvas.width!==w)canvas.width=w;if(canvas.height!==h)canvas.height=h;
+    const rows=compactScreen.matches?(width>height?6:8):(height<300?8:height<450?10:12.5);
+    if(compactScreen.matches){
+      const classes=document.querySelector('.app').classList,mode=classes.contains('in-round')||classes.contains('has-results')?'field':'lobby';
+      if(!compactTile||Math.abs(width-scaleWidth)>1||mode!==scaleMode){compactTile=Math.min(width/12,height/rows);scaleWidth=width;scaleMode=mode;}
+      tile=compactTile;
+    }else tile=Math.min(width/12,height/rows);
+    left=(width-tile*12)/2;
+  }
+  let viewportFrame=0;
+  function syncViewport(){
+    viewportFrame=0;const viewport=window.visualViewport;
+    // Pinch zoom remains available outside the playfield; it must not rescale game tiles.
+    if(!viewport||Math.abs(viewport.scale-1)<.01){
+      const value=`${Math.round(viewport?.height||window.innerHeight)}px`;
+      if(document.documentElement.style.getPropertyValue('--app-height')!==value)document.documentElement.style.setProperty('--app-height',value);
+    }
+    const landscape=innerWidth>innerHeight;
+    if(innerWidth!==viewportWidth||landscape!==viewportLandscape){compactTile=0;viewportWidth=innerWidth;viewportLandscape=landscape;}
+    resize();
+  }
+  function scheduleViewport(){if(!viewportFrame)viewportFrame=requestAnimationFrame(syncViewport);}
+  function syncEditing(){
+    const el=document.activeElement;document.querySelector('.app').classList.toggle('is-editing',el instanceof HTMLInputElement||el instanceof HTMLTextAreaElement||!!el?.isContentEditable);scheduleViewport();
+  }
   if(typeof ResizeObserver==='function')new ResizeObserver(resize).observe(stage);
-  window.addEventListener('resize',resize);if(window.visualViewport)window.visualViewport.addEventListener('resize',resize);resize();
+  window.addEventListener('resize',scheduleViewport);window.addEventListener('orientationchange',scheduleViewport);
+  if(window.visualViewport)window.visualViewport.addEventListener('resize',scheduleViewport);
+  document.addEventListener('focusin',syncEditing);document.addEventListener('focusout',()=>requestAnimationFrame(syncEditing));syncViewport();
   const sy=y=>height*.72-(y-cameraY)*tile;
   function roundedPath(x,y,w,h,r){
     if(typeof ctx.roundRect==='function'){ctx.roundRect(x,y,w,h,r);return;}
@@ -1100,7 +1189,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   function draw(frame){
     const dt=Math.max(0,Math.min(.05,(frame-lastFrame)/1000));lastFrame=frame;
     offset+=(targetOffset-offset)*(1-Math.exp(-2*dt));const at=serverNow();
-    if(!width||!height||!tile){requestAnimationFrame(draw);return;}
+    if(!width||!height||!tile){if(frame-lastUiAt>=100){updateOverlay(at);lastUiAt=frame;}requestAnimationFrame(draw);return;}
     ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,width,height);
     const bg=ctx.createLinearGradient(0,0,0,height);bg.addColorStop(0,'#102e51');bg.addColorStop(1,'#071d36');ctx.fillStyle=bg;ctx.fillRect(0,0,width,height);
     if(round&&model){
