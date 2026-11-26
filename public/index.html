@@ -48,7 +48,7 @@ button:focus-visible{outline:2px solid #88c6ff;outline-offset:3px}.lobby-control
 @media(max-width:760px){.app:not(.settings-open) .dpad button{width:56px;height:50px}.app:not(.settings-open) .scoreboard{padding:5px 10px}.app:not(.settings-open) .stage{border-radius:8px}.app:not(.settings-open) .message h2{font-size:22px}.app:not(.settings-open) .rooms-bar{padding:7px}.app:not(.settings-open) .room-actions form label{font-size:9px}.app:not(.settings-open) .room-actions input{min-height:44px}.app:not(.settings-open) .message p{font-size:11px}}
 @media(max-height:500px){.results-board{max-height:125px}.app:not(.settings-open) .message{padding:8px 14px}.app:not(.settings-open) .message h2{font-size:18px}}
 .overlay.watching{align-items:flex-end;padding:0 0 50px}.app:not(.settings-open) .overlay.watching .message{background:none;border:0;box-shadow:none;padding:0;min-width:0}.overlay.watching .message h2,.overlay.watching .message p{display:none}.app:not(.settings-open) .overlay.watching .message .action{margin-top:0;box-shadow:0 2px 8px #0004}
-</style>
+#star-status{position:absolute;z-index:4;top:8px;left:50%;transform:translateX(-50%);border-radius:20px;padding:8px 13px;background:#ffdd59;color:#17294a;font:900 13px system-ui;white-space:nowrap;pointer-events:none;box-shadow:0 0 18px #ffe97b88}#star-status[hidden]{display:none}</style>
 </head>
 <body>
 <div class="app">
@@ -57,7 +57,7 @@ button:focus-visible{outline:2px solid #88c6ff;outline-offset:3px}.lobby-control
 <section class="scoreboard" aria-label="Game scoreboard"><div class="stats"><div class="stat"><small>ALIVE</small><strong id="alive">0 <span>/ 40</span></strong></div><div class="stat"><small>YARDS</small><strong id="score">0</strong></div><div class="stat"><small>BEST</small><strong id="best">0</strong></div><div class="stat"><small>STATUS</small><strong class="status" id="lives">IN PLAY</strong></div><div class="stat compact-opponent"><small>VS</small><strong id="hud-opponent">Utah Tech</strong></div></div><div class="toolbar"><div class="mode-picker"><label for="game-mode">GAME MODE</label><select id="game-mode" aria-describedby="mode-status" disabled><option value="course">1,200 yd course</option><option value="endless">Endless ∞</option></select></div><div class="mode-picker"><label for="mode">DIFFICULTY</label><select id="mode" aria-describedby="mode-status" disabled><option value="easy">Easy</option><option value="normal">Normal</option><option value="hard">Hard</option></select></div><button class="action secondary" id="restart">New kickoff</button><button class="action secondary lobby-control" id="lobby">Team lobby</button><button class="action" id="fill">Fill with 39 Bots</button></div></section>
 <section class="matchup" aria-label="Opponent difficulty"><div class="matchup-team"><span class="opponent-icon" id="opponent-icon">UT</span><div><small id="stage-number">STAGE 1 / 12 · WARMUP</small><strong id="opponent-name">Utah Tech</strong></div></div><div class="matchup-progress"><span id="next-stage">Next: Arizona · 100 yd</span><div class="progress-track"><i id="stage-progress"></i></div></div></section>
 <div class="mode-status" id="mode-status" role="status">Easy · captain selects difficulty</div>
-<main class="stage" id="stage"><aside id="course-map" class="course-map" role="img" aria-label="Course map: your position is marked YOU" hidden><canvas id="map-canvas" width="148" height="208" aria-hidden="true"></canvas><span id="map-caption">YOU · 0 yd</span></aside><canvas id="game" tabindex="0" aria-label="Football crossing game. Move forward or sideways with arrows or W A D."></canvas><div class="field-label"><span class="pill easy" id="difficulty-label">WARMUP</span><span class="pill">GRIDIRON · 12 COLUMNS</span></div><div class="overlay" id="overlay"><div class="message"><h2 id="title">Taking the field…</h2><p id="detail">Getting ready for kickoff.</p><div class="how-to" id="how-to" hidden><b>Move:</b> hold ↑ ← → or W A D, or use the buttons.<br><b>Cross:</b> dodge defenders and ride rafts across water.<br><b>Keep going:</b> stay ahead of the pressure line. One life.</div><section class="lobby-roster" id="lobby-roster" aria-label="Lobby roster" hidden><h3 id="roster-heading">TEAM ROSTER</h3><ul id="roster-list"></ul><small>Ready is a signal to your captain. The captain chooses when to start.</small></section><button class="action ready-button" id="ready" aria-pressed="false" hidden>I’m ready</button><div class="results-board" id="results-board" hidden><h3 id="results-heading">ROOM LEADERBOARD</h3><div class="your-rank" id="your-rank"></div><ol id="results-list"></ol></div><button class="action secondary" id="toggle-standings" hidden>Watch the field</button><button class="action" id="retry" hidden>Kick off again</button></div></div><div class="spectator-status" id="spectator-status" role="status" hidden><strong id="watching"></strong><small id="spectator-counts"></small></div><div class="toast" id="toast" hidden></div><div class="game-broadcast" id="game-broadcast">BYU RETURN<small id="broadcast-detail">LAVELL EDWARDS STADIUM</small></div><div class="celebration" id="celebration" role="status" hidden><strong>TOUCHDOWN!</strong><span id="celebration-detail"></span></div><div class="you-note" id="note">White BYU jersey = YOU · One hop per cell</div></main>
+<main class="stage" id="stage"><div id="star-status" role="status" hidden></div><aside id="course-map" class="course-map" role="img" aria-label="Course map: your position is marked YOU" hidden><canvas id="map-canvas" width="148" height="208" aria-hidden="true"></canvas><span id="map-caption">YOU · 0 yd</span></aside><canvas id="game" tabindex="0" aria-label="Football crossing game. Move forward or sideways with arrows or W A D."></canvas><div class="field-label"><span class="pill easy" id="difficulty-label">WARMUP</span><span class="pill">GRIDIRON · 12 COLUMNS</span></div><div class="overlay" id="overlay"><div class="message"><h2 id="title">Taking the field…</h2><p id="detail">Getting ready for kickoff.</p><div class="how-to" id="how-to" hidden><b>Move:</b> hold ↑ ← → or W A D, or use the buttons.<br><b>Cross:</b> dodge defenders and ride rafts across water.<br><b>Keep going:</b> stay ahead of the pressure line. One life.</div><section class="lobby-roster" id="lobby-roster" aria-label="Lobby roster" hidden><h3 id="roster-heading">TEAM ROSTER</h3><ul id="roster-list"></ul><small>Ready is a signal to your captain. The captain chooses when to start.</small></section><button class="action ready-button" id="ready" aria-pressed="false" hidden>I’m ready</button><div class="results-board" id="results-board" hidden><h3 id="results-heading">ROOM LEADERBOARD</h3><div class="your-rank" id="your-rank"></div><ol id="results-list"></ol></div><button class="action secondary" id="toggle-standings" hidden>Watch the field</button><button class="action" id="retry" hidden>Kick off again</button></div></div><div class="spectator-status" id="spectator-status" role="status" hidden><strong id="watching"></strong><small id="spectator-counts"></small></div><div class="toast" id="toast" hidden></div><div class="game-broadcast" id="game-broadcast">BYU RETURN<small id="broadcast-detail">LAVELL EDWARDS STADIUM</small></div><div class="celebration" id="celebration" role="status" hidden><strong>TOUCHDOWN!</strong><span id="celebration-detail"></span></div><div class="you-note" id="note">White BYU jersey = YOU · One hop per cell</div></main>
 <footer class="footer"><button class="room-button settings-toggle" id="settings-toggle" aria-expanded="false" aria-label="Settings">Settings</button><div class="instructions"><b>Hold ↑ ← → or W A D.</b> <span id="obstacle-tip">Keep advancing! The pressure line follows you. Pause briefly to time crossings.</span><div class="legend" id="legend" aria-label="BYU 2026 opponents"></div><div class="footnote">Opponents from the <a href="https://byucougars.com/sports/football/schedule/season/2026" target="_blank" rel="noopener">2026 BYU schedule</a>. Fan-made game.</div></div><button class="room-button sound-control" id="sound" aria-label="Mute game audio" aria-pressed="false">Sound on</button><div class="dpad" aria-label="Movement controls"><button data-dx="-1" data-dy="0" aria-label="Move left">←</button><button data-dx="0" data-dy="1" aria-label="Move forward">↑</button><button data-dx="1" data-dy="0" aria-label="Move right">→</button></div></footer>
 </div>
 <script id="shared-physics">
@@ -234,6 +234,27 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
     }
     return result;
   }
+  const STAR_MS = 15000, STAR_INTERVAL = 80;
+  const invincible = (p, at) => (p.invincibleUntil || 0) > at;
+  function starFor(seed, section) {
+    if (!Number.isInteger(section) || section < 0) return null;
+    const start = section * STAR_INTERVAL + 6;
+    for (let y = start; y < start + 24; y++) {
+      if (!endless && y >= FINISH_ROW) return null;
+      if (lane(seed, y).type !== 'safe') continue;
+      const first = hash32(`${seed}:star:${section}`) % WIDTH;
+      for (let i = 0; i < WIDTH; i++) {
+        const x = (first + i) % WIDTH + 0.5;
+        if (!blocked(seed, x, y)) return {x, y};
+      }
+    }
+    return null;
+  }
+  function collectStar(p, seed) {
+    const star = starFor(seed, Math.floor(Math.max(0, p.y) / STAR_INTERVAL));
+    if (!star || star.y <= (p.lastStarRow ?? -1) || Math.abs(p.x-star.x) > .42 || Math.abs(p.y-star.y) > .3) return false;
+    p.lastStarRow = star.y; p.invincibleUntil = p.simAt + STAR_MS; return true;
+  }
   function danger(seed, x, y, seconds, airborne = false) {
     if (x < RADIUS || x > WIDTH - RADIUS) return 'sideline';
     const row = Math.round(y), l = lane(seed, row);
@@ -250,7 +271,7 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
     const y = Math.round(p.y) + dy;
     // River riders keep their continuous drift; every landing on land returns to a cell center.
     const x = (lane(seed, y).type === 'river' ? p.x : Math.floor(p.x) + 0.5) + dx;
-    if (x < 0.5 || x > WIDTH - 0.5 || y < -3 || blocked(seed, x, y)) return false;
+    if (x < 0.5 || x > WIDTH - 0.5 || y < -3 || !invincible(p, now) && blocked(seed, x, y)) return false;
     p.hop = { x: p.x, y: p.y, tx: x, ty: y, at: now };
     p.nextStep = now + STEP_MS;
     return true;
@@ -278,7 +299,13 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
   // Queue timestamps are authoritative receipt times, preventing commands from starting before arrival.
   function simulate(p, now, seed, startedAt, minY = null) {
     if (!p.alive || now < p.simAt) return null;
-    const hazard = () => minY === null ? null : p.y < minY ? 'scroll wall' : danger(seed, p.x, p.y, (p.simAt - startedAt) / 1000, !!p.hop);
+    const hazard = () => {
+      collectStar(p, seed);
+      if (minY === null) return null;
+      if (p.y < minY) return 'scroll wall';
+      if (p.x < RADIUS || p.x > WIDTH-RADIUS) return 'sideline';
+      return invincible(p, p.simAt) ? null : danger(seed, p.x, p.y, (p.simAt-startedAt)/1000, !!p.hop);
+    };
     if (now - p.simAt > 1000) advance(p, now - 1000, seed, startedAt);
     let hit = hazard(); if (hit) return hit;
     for (;;) {
@@ -288,6 +315,7 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
       }
       if (p.simAt >= now) break;
       let next = Math.min(now, p.simAt + 12.5);
+      if (invincible(p, p.simAt)) next = Math.min(next, p.invincibleUntil);
       if (p.hop) next = Math.min(next, p.hop.at + HOP_MS);
       else if (p.queued) {
         const ready = Math.max(p.nextStep, p.queued.at ?? p.simAt);
@@ -315,7 +343,7 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
   }
   function interpolationDelay(rtt, jitter = 0) { return clamp(70 + rtt / 2 + jitter * 2, 90, 260); }
 
-  return { MAX_PLAYERS, MODES, profile, endless, withDifficulty: createGameRules, WIDTH, HOP_MS, STEP_MS, RADIUS, STAGE_YARDS, YARDS_PER_ROW, ROWS_PER_STAGE, OPPONENTS, FINISH_ROW, stageFor, difficulty, sledsFor, blocked, blitzes, mod, clamp, hash32, random, yardNumber, lane, obstacles, rafts, danger, beginHop, advance, simulate, predict, interpolationDelay, copy };
+  return { STAR_MS, STAR_INTERVAL, invincible, starFor, collectStar, MAX_PLAYERS, MODES, profile, endless, withDifficulty: createGameRules, WIDTH, HOP_MS, STEP_MS, RADIUS, STAGE_YARDS, YARDS_PER_ROW, ROWS_PER_STAGE, OPPONENTS, FINISH_ROW, stageFor, difficulty, sledsFor, blocked, blitzes, mod, clamp, hash32, random, yardNumber, lane, obstacles, rafts, danger, beginHop, advance, simulate, predict, interpolationDelay, copy };
 }
 const Game = createGameRules();
 if (typeof module !== 'undefined' && module.exports) module.exports = Game;
@@ -323,25 +351,27 @@ if (typeof module !== 'undefined' && module.exports) module.exports = Game;
 // Compact wire format: static roster/settings travel separately from 20 Hz movement.
 // Remote positions use float32; authoritative local prediction keeps float64 precision.
 const SNAPSHOT_REASONS = ['', 'tackle', 'water', 'sideline', 'scroll wall', 'blitz', 'blocking sled', 'Joining next kickoff', 'eliminated', 'finished'];
-function encodeSnapshot(packet, revision) {
+function encodeSnapshot(packet, revision, version = 2) {
   const p=packet.self, count=packet.players.length;
   if(count>Game.MAX_PLAYERS)throw new Error('Too many snapshot players');
-  const bytes=new Uint8Array(26+count*9+49+(p.hop?40:0)+(p.queued?14:0)),view=new DataView(bytes.buffer);let at=0;
+  const bytes=new Uint8Array(26+count*9+49+(p.hop?40:0)+(p.queued?14:0)+(version===3?12+count*8:0)),view=new DataView(bytes.buffer);let at=0;
   const u8=value=>{view.setUint8(at,value);at++;},i8=value=>{view.setInt8(at,value);at++;},u32=value=>{view.setUint32(at,value);at+=4;};
   const f32=value=>{view.setFloat32(at,value);at+=4;},f64=value=>{view.setFloat64(at,value);at+=8;};
-  u8(2);u32(revision);f64(packet.t);f64(packet.round.minY);u32(packet.round.pressureStage||0);u8(count);
+  u8(version);u32(revision);f64(packet.t);f64(packet.round.minY);u32(packet.round.pressureStage||0);u8(count);
   for(const row of packet.players){f32(row[1]);f32(row[2]);u8(row[3]?1:0);}
   f64(p.x);f64(p.y);u8(p.alive?1:0);u8(p.lives);f64(p.score);f64(p.nextStep);f64(p.simAt);u32(p.ack);
   const reason=SNAPSHOT_REASONS.indexOf(p.reason||'');u8(reason<0?8:reason);
   u8(p.hop?1:0);if(p.hop)for(const field of ['x','y','tx','ty','at'])f64(p.hop[field]);
   u8(p.queued?1:0);if(p.queued){i8(p.queued.dx);i8(p.queued.dy);u32(p.queued.seq);f64(p.queued.at);}
+  if(version===3){f64(p.invincibleUntil||0);u32((p.lastStarRow??-1)+1);for(const row of packet.players)f64(row[6]||0);}
   return bytes;
 }
 function decodeSnapshot(data,setup) {
   const view=ArrayBuffer.isView(data)?new DataView(data.buffer,data.byteOffset,data.byteLength):new DataView(data);let at=0;
   const u8=()=>view.getUint8(at++),i8=()=>view.getInt8(at++),u32=()=>{const n=view.getUint32(at);at+=4;return n;};
   const f32=()=>{const n=view.getFloat32(at);at+=4;return +n.toFixed(4);},f64=()=>{const n=view.getFloat64(at);at+=8;return n;};
-  if(view.byteLength<26||u8()!==2)throw new Error('Unsupported snapshot');
+  if(view.byteLength<26)throw new Error('Unsupported snapshot');
+  const version=u8();if(version!==2&&version!==3)throw new Error('Unsupported snapshot');
   const revision=u32();if(!setup||revision!==setup.revision)return null;
   const t=f64(),minY=f64(),pressureStage=u32(),count=u8();
   if(count!==setup.roster.length||count>Game.MAX_PLAYERS||view.byteLength<26+count*9+49)throw new Error('Invalid snapshot roster');
@@ -349,6 +379,7 @@ function decodeSnapshot(data,setup) {
   const self={x:f64(),y:f64(),alive:!!u8(),lives:u8(),score:f64(),nextStep:f64(),simAt:f64(),ack:u32(),reason:SNAPSHOT_REASONS[u8()]??'eliminated',hop:null,queued:null};
   if(u8())self.hop={x:f64(),y:f64(),tx:f64(),ty:f64(),at:f64()};
   if(u8())self.queued={dx:i8(),dy:i8(),seq:u32(),at:f64()};
+  if(version===3){self.invincibleUntil=f64();self.lastStarRow=u32()-1;for(const row of players)row[6]=f64();}
   if(at!==view.byteLength)throw new Error('Invalid snapshot length');
   const {roster,revision:ignored,...state}=setup;
   return {...state,t,round:{...setup.round,minY,pressureStage},count,alive:players.reduce((sum,p)=>sum+p[3],0),players,self};
@@ -385,7 +416,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
   const initialCode=inviteCode||savedRoom?.id||'PUBLIC';
   if(inviteCode)$('room-code').value=inviteCode;
   let roomAuth={roomAction:inviteCode&&inviteCode!==savedRoom?.id?'join':initialCode==='PUBLIC'?'public':'resume',roomCode:initialCode,roomKind:savedRoom?.kind||'public'};
-  const auth=()=>({name:$('name').value,session,snapshotVersion:2,...roomAuth});
+  const auth=()=>({name:$('name').value,session,snapshotVersion:3,...roomAuth});
   const socket = io({ auth: auth(), transports:['websocket','polling'],tryAllTransports:true,timeout:7000,reconnectionDelay:500 });
   let latestLeaderboard=null,standingsOpen=true,mapPlayers=[],startSoloOnJoin=false;
   let everJoined=false,disconnectedAt=0,rosterKey='',members=[],roster=[],localReady=false,remaining=0,watchingName='';
@@ -568,6 +599,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
     snapshots.push({t:state.t,players:state.players,byId:new Map(state.players.map(p=>[p[0],p]))});while(snapshots.length>30)snapshots.shift();
     if(rawSelf?.alive&&!state.self.alive&&!changed){if(state.self.reason==='finished'){stadiumAudio.touchdown();showToast('Finished!');}else{stadiumAudio.impact(state.self.reason==='water');showToast(`Out: ${state.self.reason||'tackle'}`);}}
     if(!changed&&rawSelf?.alive&&state.self.alive&&Math.floor(state.self.score/20)>Math.floor(rawSelf.score/20))celebrate(Math.floor(state.self.score/20)*100);
+    if(!changed&&(state.self.invincibleUntil||0)>(rawSelf?.invincibleUntil||0))showToast('★ Invincible for 15 seconds!');
     updateResults(state);
     rawSelf=state.self;pending=pending.filter(c=>c.seq>rawSelf.ack);
     const preservePrediction=!changed&&!needsRebase&&model?.alive&&rawSelf.alive&&pending.length&&rawSelf.ack===oldAck&&round.phase==='running';
@@ -964,6 +996,20 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
       for(let i=0;i<10;i++){const angle=i*Math.PI/5;ctx.fillStyle=i%2?'#fff':'#77bcff';ctx.fillRect(x+Math.cos(angle)*tile*burst*1.3,receiverY+Math.sin(angle)*tile*burst*1.3,tile*.09,tile*.09);}ctx.restore();
     }
   }
+  function drawStar(x,y,r,at,shield=false){
+    ctx.save();ctx.translate(x,y);ctx.shadowColor='#ffe86a';ctx.shadowBlur=shield?tile*.6:tile*.25;
+    if(shield){ctx.strokeStyle='#ffe86a';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,r*1.65,0,Math.PI*2);ctx.stroke();}
+    else if(!reducedMotion?.matches)ctx.translate(0,Math.sin(at/280)*tile*.06);
+    ctx.fillStyle='#ffe66b';ctx.strokeStyle='#926100';ctx.lineWidth=2;ctx.beginPath();
+    for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.44:r;const x=Math.cos(a)*rr,y=Math.sin(a)*rr;if(i)ctx.lineTo(x,y);else ctx.moveTo(x,y);}
+    ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();
+  }
+  function drawStars(low,high,at){
+    for(let section=Math.max(0,Math.floor(low/Game.STAR_INTERVAL));section<=Math.floor(high/Game.STAR_INTERVAL);section++){
+      const star=rules.starFor(round.seed,section);if(!star||star.y<low||star.y>high||star.y<round.minY||star.y<=(model.lastStarRow??-1))continue;
+      drawStar(left+star.x*tile,sy(star.y),tile*.3,at);
+    }
+  }
   function samplePlayers(at){
     if(!snapshots.length)return[];
     let a=snapshots[0],b=snapshots[snapshots.length-1];
@@ -1044,10 +1090,10 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
         ctx.shadowColor='#071b32';ctx.shadowBlur=5;
         ctx.fillText('KEEP MOVING!',left+6*tile,Math.max(26,Math.min(height-20,wall-14)));ctx.restore();
       }
-      if(round.phase==='running')drawBlitzes(seconds,low,high);
+      if(round.phase==='running'){drawBlitzes(seconds,low,high);drawStars(low,high,at);}
       // Other players draw first; the local white helmet always stays on top.
       remote.filter(p=>p[3]&&p[0]!==myId).sort((a,b)=>b[2]-a[2]).forEach(p=>{
-        const x=left+p[1]*tile,y=sy(p[2]);squarePiece(x,y,'#a9d4ff88','#00356835',.82);
+        const x=left+p[1]*tile,y=sy(p[2]);if((p[6]||0)>at)drawStar(x,y,tile*.31,at,true);squarePiece(x,y,'#a9d4ff88','#00356835',.82);
         const previous=snapshots.length>1?snapshots[snapshots.length-2].byId.get(p[0]):null;
         const moving=previous&&Math.hypot(p[1]-previous[1],p[2]-previous[2])>.015;
         byuRunner(x,y,tile*.82,jersey(p[0]),moving&&!reducedMotion?.matches?at/120+p[2]:0,0,.62,round.phase==='running',p[4]);
@@ -1057,6 +1103,7 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
         const x=left+localView.x*tile,y=sy(localView.y);
         const targetLift=model.hop?Math.sin(Game.clamp((at-model.hop.at)/Game.HOP_MS,0,1)*Math.PI)*.19:0;
         hopLift+=(targetLift-hopLift)*(1-Math.exp(-32*dt));const hop=hopLift*tile;
+        if(Game.invincible(model,at))drawStar(x,y,tile*.34,at,true);
         squarePiece(x,y,'#ffffff','#0056be80',.92);
         const phase=model.hop?Game.clamp((at-model.hop.at)/Game.HOP_MS,0,1):1;
         if(model.hop&&lastHopAt!==model.hop.at)lastHopAt=model.hop.at;
@@ -1076,6 +1123,8 @@ Object.assign(Game,{encodeSnapshot,decodeSnapshot});
       ctx.restore();
       drawStadium(seconds);
     }
+    const protectedNow=round?.phase==='running'&&model?.alive&&Game.invincible(model,at);
+    $('star-status').hidden=!protectedNow;if(protectedNow)text('star-status',`★ INVINCIBLE · ${Math.ceil((model.invincibleUntil-at)/1000)}s`);
     presentation(at);
     if(frame-lastUiAt>=100){drawCourseMap();updateOverlay(at);lastUiAt=frame;}
     requestAnimationFrame(draw);

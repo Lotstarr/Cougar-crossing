@@ -171,6 +171,27 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
     }
     return result;
   }
+  const STAR_MS = 15000, STAR_INTERVAL = 80;
+  const invincible = (p, at) => (p.invincibleUntil || 0) > at;
+  function starFor(seed, section) {
+    if (!Number.isInteger(section) || section < 0) return null;
+    const start = section * STAR_INTERVAL + 6;
+    for (let y = start; y < start + 24; y++) {
+      if (!endless && y >= FINISH_ROW) return null;
+      if (lane(seed, y).type !== 'safe') continue;
+      const first = hash32(`${seed}:star:${section}`) % WIDTH;
+      for (let i = 0; i < WIDTH; i++) {
+        const x = (first + i) % WIDTH + 0.5;
+        if (!blocked(seed, x, y)) return {x, y};
+      }
+    }
+    return null;
+  }
+  function collectStar(p, seed) {
+    const star = starFor(seed, Math.floor(Math.max(0, p.y) / STAR_INTERVAL));
+    if (!star || star.y <= (p.lastStarRow ?? -1) || Math.abs(p.x-star.x) > .42 || Math.abs(p.y-star.y) > .3) return false;
+    p.lastStarRow = star.y; p.invincibleUntil = p.simAt + STAR_MS; return true;
+  }
   function danger(seed, x, y, seconds, airborne = false) {
     if (x < RADIUS || x > WIDTH - RADIUS) return 'sideline';
     const row = Math.round(y), l = lane(seed, row);
@@ -187,7 +208,7 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
     const y = Math.round(p.y) + dy;
     // River riders keep their continuous drift; every landing on land returns to a cell center.
     const x = (lane(seed, y).type === 'river' ? p.x : Math.floor(p.x) + 0.5) + dx;
-    if (x < 0.5 || x > WIDTH - 0.5 || y < -3 || blocked(seed, x, y)) return false;
+    if (x < 0.5 || x > WIDTH - 0.5 || y < -3 || !invincible(p, now) && blocked(seed, x, y)) return false;
     p.hop = { x: p.x, y: p.y, tx: x, ty: y, at: now };
     p.nextStep = now + STEP_MS;
     return true;
@@ -215,7 +236,13 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
   // Queue timestamps are authoritative receipt times, preventing commands from starting before arrival.
   function simulate(p, now, seed, startedAt, minY = null) {
     if (!p.alive || now < p.simAt) return null;
-    const hazard = () => minY === null ? null : p.y < minY ? 'scroll wall' : danger(seed, p.x, p.y, (p.simAt - startedAt) / 1000, !!p.hop);
+    const hazard = () => {
+      collectStar(p, seed);
+      if (minY === null) return null;
+      if (p.y < minY) return 'scroll wall';
+      if (p.x < RADIUS || p.x > WIDTH-RADIUS) return 'sideline';
+      return invincible(p, p.simAt) ? null : danger(seed, p.x, p.y, (p.simAt-startedAt)/1000, !!p.hop);
+    };
     if (now - p.simAt > 1000) advance(p, now - 1000, seed, startedAt);
     let hit = hazard(); if (hit) return hit;
     for (;;) {
@@ -225,6 +252,7 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
       }
       if (p.simAt >= now) break;
       let next = Math.min(now, p.simAt + 12.5);
+      if (invincible(p, p.simAt)) next = Math.min(next, p.invincibleUntil);
       if (p.hop) next = Math.min(next, p.hop.at + HOP_MS);
       else if (p.queued) {
         const ready = Math.max(p.nextStep, p.queued.at ?? p.simAt);
@@ -252,7 +280,7 @@ function createGameRules(mode = 'easy', gameMode = 'course') {
   }
   function interpolationDelay(rtt, jitter = 0) { return clamp(70 + rtt / 2 + jitter * 2, 90, 260); }
 
-  return { MAX_PLAYERS, MODES, profile, endless, withDifficulty: createGameRules, WIDTH, HOP_MS, STEP_MS, RADIUS, STAGE_YARDS, YARDS_PER_ROW, ROWS_PER_STAGE, OPPONENTS, FINISH_ROW, stageFor, difficulty, sledsFor, blocked, blitzes, mod, clamp, hash32, random, yardNumber, lane, obstacles, rafts, danger, beginHop, advance, simulate, predict, interpolationDelay, copy };
+  return { STAR_MS, STAR_INTERVAL, invincible, starFor, collectStar, MAX_PLAYERS, MODES, profile, endless, withDifficulty: createGameRules, WIDTH, HOP_MS, STEP_MS, RADIUS, STAGE_YARDS, YARDS_PER_ROW, ROWS_PER_STAGE, OPPONENTS, FINISH_ROW, stageFor, difficulty, sledsFor, blocked, blitzes, mod, clamp, hash32, random, yardNumber, lane, obstacles, rafts, danger, beginHop, advance, simulate, predict, interpolationDelay, copy };
 }
 const Game = createGameRules();
 if (typeof module !== 'undefined' && module.exports) module.exports = Game;
@@ -260,25 +288,27 @@ if (typeof module !== 'undefined' && module.exports) module.exports = Game;
 // Compact wire format: static roster/settings travel separately from 20 Hz movement.
 // Remote positions use float32; authoritative local prediction keeps float64 precision.
 const SNAPSHOT_REASONS = ['', 'tackle', 'water', 'sideline', 'scroll wall', 'blitz', 'blocking sled', 'Joining next kickoff', 'eliminated', 'finished'];
-function encodeSnapshot(packet, revision) {
+function encodeSnapshot(packet, revision, version = 2) {
   const p=packet.self, count=packet.players.length;
   if(count>Game.MAX_PLAYERS)throw new Error('Too many snapshot players');
-  const bytes=new Uint8Array(26+count*9+49+(p.hop?40:0)+(p.queued?14:0)),view=new DataView(bytes.buffer);let at=0;
+  const bytes=new Uint8Array(26+count*9+49+(p.hop?40:0)+(p.queued?14:0)+(version===3?12+count*8:0)),view=new DataView(bytes.buffer);let at=0;
   const u8=value=>{view.setUint8(at,value);at++;},i8=value=>{view.setInt8(at,value);at++;},u32=value=>{view.setUint32(at,value);at+=4;};
   const f32=value=>{view.setFloat32(at,value);at+=4;},f64=value=>{view.setFloat64(at,value);at+=8;};
-  u8(2);u32(revision);f64(packet.t);f64(packet.round.minY);u32(packet.round.pressureStage||0);u8(count);
+  u8(version);u32(revision);f64(packet.t);f64(packet.round.minY);u32(packet.round.pressureStage||0);u8(count);
   for(const row of packet.players){f32(row[1]);f32(row[2]);u8(row[3]?1:0);}
   f64(p.x);f64(p.y);u8(p.alive?1:0);u8(p.lives);f64(p.score);f64(p.nextStep);f64(p.simAt);u32(p.ack);
   const reason=SNAPSHOT_REASONS.indexOf(p.reason||'');u8(reason<0?8:reason);
   u8(p.hop?1:0);if(p.hop)for(const field of ['x','y','tx','ty','at'])f64(p.hop[field]);
   u8(p.queued?1:0);if(p.queued){i8(p.queued.dx);i8(p.queued.dy);u32(p.queued.seq);f64(p.queued.at);}
+  if(version===3){f64(p.invincibleUntil||0);u32((p.lastStarRow??-1)+1);for(const row of packet.players)f64(row[6]||0);}
   return bytes;
 }
 function decodeSnapshot(data,setup) {
   const view=ArrayBuffer.isView(data)?new DataView(data.buffer,data.byteOffset,data.byteLength):new DataView(data);let at=0;
   const u8=()=>view.getUint8(at++),i8=()=>view.getInt8(at++),u32=()=>{const n=view.getUint32(at);at+=4;return n;};
   const f32=()=>{const n=view.getFloat32(at);at+=4;return +n.toFixed(4);},f64=()=>{const n=view.getFloat64(at);at+=8;return n;};
-  if(view.byteLength<26||u8()!==2)throw new Error('Unsupported snapshot');
+  if(view.byteLength<26)throw new Error('Unsupported snapshot');
+  const version=u8();if(version!==2&&version!==3)throw new Error('Unsupported snapshot');
   const revision=u32();if(!setup||revision!==setup.revision)return null;
   const t=f64(),minY=f64(),pressureStage=u32(),count=u8();
   if(count!==setup.roster.length||count>Game.MAX_PLAYERS||view.byteLength<26+count*9+49)throw new Error('Invalid snapshot roster');
@@ -286,6 +316,7 @@ function decodeSnapshot(data,setup) {
   const self={x:f64(),y:f64(),alive:!!u8(),lives:u8(),score:f64(),nextStep:f64(),simAt:f64(),ack:u32(),reason:SNAPSHOT_REASONS[u8()]??'eliminated',hop:null,queued:null};
   if(u8())self.hop={x:f64(),y:f64(),tx:f64(),ty:f64(),at:f64()};
   if(u8())self.queued={dx:i8(),dy:i8(),seq:u32(),at:f64()};
+  if(version===3){self.invincibleUntil=f64();self.lastStarRow=u32()-1;for(const row of players)row[6]=f64();}
   if(at!==view.byteLength)throw new Error('Invalid snapshot length');
   const {roster,revision:ignored,...state}=setup;
   return {...state,t,round:{...setup.round,minY,pressureStage},count,alive:players.reduce((sum,p)=>sum+p[3],0),players,self};

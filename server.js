@@ -58,7 +58,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       const startY = -(Math.floor(index / 12)) || 0;
       Object.assign(p, { pressureY: startY - 1.5, pressurePeak: startY, pressureAt: at, x: ((index * 7 + 5) % 12) + 0.5, y: startY,
         ready: !!p.bot, alive: p.bot || p.connected, lives: 1, score: 0, hop: null, nextStep: at, simAt: at,
-        ack: 0, queued: null, reason: '', finishedAt: null, aiAt: at + 200 + Math.random() * 400 });
+        invincibleUntil: 0, lastStarRow: -1, ack: 0, queued: null, reason: '', finishedAt: null, aiAt: at + 200 + Math.random() * 400 });
       if (p.alive && !['running','over'].includes(round.phase)) entrantRecords.set(p.id,p);
     }
     function add(id, name, bot) {
@@ -147,11 +147,11 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       return { t: at, round: { ...round }, count: players.size, alive: alive().length, botMode, teamMode,
         members: [...players.values()].map(p => [p.id, +p.bot, +p.connected, +(p.ready || p.id === hostId())]),
         room: info(), hostId: hostId(), humanCount: connectedHumans().length, selectedDifficulty, selectedGameMode,
-        players: [...players.values()].map(p => [p.id, +p.x.toFixed(4), +p.y.toFixed(4), +p.alive, p.color, p.name]) };
+        players: [...players.values()].map(p => [p.id, +p.x.toFixed(4), +p.y.toFixed(4), +p.alive, p.color, p.name, p.invincibleUntil||0]) };
     }
     function self(p) {
       return { x: p.x, y: p.y, alive: p.alive, lives: p.lives, score: p.score, hop: p.hop, queued: p.queued,
-        nextStep: p.nextStep, simAt: p.simAt, ack: p.ack, reason: p.reason };
+        invincibleUntil:p.invincibleUntil||0,lastStarRow:p.lastStarRow??-1, nextStep: p.nextStep, simAt: p.simAt, ack: p.ack, reason: p.reason };
     }
     function metadata(packet) {
       const {players,t,alive,round:details,...settings}=packet;
@@ -169,12 +169,12 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
       const polling=socket.conn.transport.name==='polling';
       const deliver=reliable||polling;
       if(!reliable&&polling&&socket.conn.writeBuffer.length>=12)return;
-      if(socket.data.snapshotVersion!==2){if(deliver)socket.emit('state',local);else socket.volatile.emit('state',local);return;}
+      if(![2,3].includes(socket.data.snapshotVersion)){if(deliver)socket.emit('state',local);else socket.volatile.emit('state',local);return;}
       if(socket.data.snapshotRoom!==code||socket.data.setupRevision!==setup.revision){
         socket.data.snapshotRoom=code;socket.data.setupRevision=setup.revision;
         socket.compress(false).emit('snapshotSetup',setup);
       }
-      const encoded=Game.encodeSnapshot(local,setup.revision);
+      const encoded=Game.encodeSnapshot(local,setup.revision,socket.data.snapshotVersion);
       if(deliver)socket.compress(false).emit('snapshot',encoded);else socket.compress(false).volatile.emit('snapshot',encoded);
     }
     function tick() {
@@ -375,7 +375,7 @@ function createGameServer({ clock, autoTick = true, transports = ['polling','web
   } }));
   app.get('/health', (_req,res) => res.json({ ok: true, players: mainRoom.players.size, phase: mainRoom.round.phase, rooms: rooms.size, totalPlayers: [...rooms.values()].reduce((sum,r) => sum + r.players.size, 0) }));
   io.on('connection', socket => {
-    socket.data.snapshotVersion=socket.handshake.auth?.snapshotVersion===2?2:1;
+    socket.data.snapshotVersion=[2,3].includes(socket.handshake.auth?.snapshotVersion)?socket.handshake.auth.snapshotVersion:1;
     socket.on('clock', (_data, reply) => { if (typeof reply === 'function') reply(now()); });
     socket.on('room', request => route(socket, request));
     const auth = socket.handshake.auth || {};
